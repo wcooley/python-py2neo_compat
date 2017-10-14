@@ -1,0 +1,47 @@
+#
+# Create a .env file with the following defined:
+# TOX_WORKDIR
+# WHEELS_DIR
+# PROJECT_SRC
+#
+# Note that there is no variable interpolation, so setting e.g. 'BASE_DIR'
+# and using that in the other definitions will *not* work.
+#
+
+version: '3'
+services:
+    neo4j:
+        image: neo4j:3.0
+        environment:
+            NEO4J_AUTH: none
+        ports:
+            - '7474:7474'
+            - '7473:7473'
+            - '7687:7687'
+        healthcheck:
+            test: ['CMD', 'curl', 'http://localhost:7474']
+            interval: 30s
+            timeout: 5s
+            retries: 6
+
+    base:
+        image: wcooley/multi-python-base:latest
+        environment:
+            NEO4J_URI: http://docker_neo4j:7474/db/data/
+        links:
+            - neo4j:docker_neo4j
+        volumes:
+            - ${TOX_WORKDIR}:/data/tox
+            - ${WHEELS_DIR}:/data/wheels
+            - ${PROJECT_SRC}:/data/src
+
+    tox:
+        image: wcooley/multi-python-tox:latest
+        environment:
+            NEO4J_URI: http://docker_neo4j:7474/db/data/
+        links:
+            - neo4j:docker_neo4j
+        volumes:
+            - ${TOX_WORKDIR}:/data/tox
+            - ${WHEELS_DIR}:/data/wheels
+            - ${PROJECT_SRC}:/data/src
