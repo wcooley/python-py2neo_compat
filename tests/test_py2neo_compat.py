@@ -3,6 +3,8 @@
 
 """Tests for `py2neo_compat` package."""
 
+from __future__ import absolute_import, print_function
+
 import pytest
 
 
