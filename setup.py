@@ -16,7 +16,6 @@ requirements = [
 ]
 
 setup_requirements = [
-    'pytest-runner',
     # TODO(wcooley): put setup requirements (distutils extensions, etc.) here
 ]
 
