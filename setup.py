@@ -16,6 +16,8 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'boltons',
     'py2neo',
+    'six',
+    'typing',
 ]
 
 setup_requirements = [
