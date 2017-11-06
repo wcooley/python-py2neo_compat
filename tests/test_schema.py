@@ -68,6 +68,7 @@ def test_schema_template_subpath(given, expected):
         assert schema_template_subpath(**given) == expected
 
 
+@pytest.mark.todo_v3
 @pytest.mark.integration
 def test_drop_schema(sample_graph):
     """Test the :func:`drop_schema` works."""
