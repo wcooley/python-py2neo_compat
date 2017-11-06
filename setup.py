@@ -29,6 +29,7 @@ test_requirements = [
     'pytest',
     'pytest-catchlog',
     'pytest-cov',
+    'pytest-forked',
     'pytest-mock',
 ]
 
