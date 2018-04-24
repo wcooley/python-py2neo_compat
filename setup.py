@@ -26,8 +26,7 @@ setup_requirements = [
 
 test_requirements = [
     'coverage',
-    'pytest',
-    'pytest-catchlog',
+    'pytest >= 3.3.0',
     'pytest-cov',
     'pytest-forked',
     'pytest-mock',
