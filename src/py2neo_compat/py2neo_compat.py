@@ -12,7 +12,7 @@ try:
     # noinspection PyUnresolvedReferences
     from typing import Any, Dict, List, Mapping, NamedTuple, Optional, \
         Union, Iterator, Tuple  # noqa
-except ImportError:
+except ImportError:  # pragma: no cover
     """Module :mod:`typing` not required for Py27-compatible type comments."""
 
 import six
@@ -25,9 +25,9 @@ if py2neo.__version__.startswith('1.6'):
     py2neo_ver = 1
 elif py2neo.__version__.startswith('2.0'):
     py2neo_ver = 2
-elif py2neo.__version__.startswith('3'):
+elif py2neo.__version__.startswith('3'):  # pragma: no cover
     py2neo_ver = 3
-else:
+else:  # pragma: no cover
     raise NotImplementedError("py2neo %d not supported" % py2neo.__version__)
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name

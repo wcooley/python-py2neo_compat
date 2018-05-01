@@ -9,7 +9,7 @@ import logging
 
 import importlib
 
-try:
+try:  # pragma: no cover
     from typing import Iterable, TypeVar, Callable, Union, Optional
     C = TypeVar('C')  # Constructor/Class
     D = TypeVar('D')  # Default
@@ -73,7 +73,7 @@ except ImportError:
             """Initialize."""
             self.__dict__.update(kwargs)
 
-        def __repr__(self):
+        def __repr__(self):  # pragma: no cover
             """Represent."""
             keys = sorted(self.__dict__)
             items = ("{}={!r}".format(k, self.__dict__[k]) for k in keys)
