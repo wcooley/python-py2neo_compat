@@ -280,4 +280,5 @@ def py2neo_entity_to_dict(entity):
     return entity
 
 
-__all__ += ('py2neo_entity_to_dict',)
+to_dict = py2neo_entity_to_dict
+__all__ += ('py2neo_entity_to_dict', 'to_dict')
