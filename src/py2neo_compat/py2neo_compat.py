@@ -10,8 +10,10 @@ from collections import namedtuple
 
 try:
     # noinspection PyUnresolvedReferences
-    from typing import Any, Dict, List, Mapping, NamedTuple, Optional, \
-        Union, Iterator, Tuple  # noqa
+    from typing import (
+        Any, Dict, List, Mapping, NamedTuple, Optional,
+        Union, Tuple, Iterable,  # noqa
+    )
 except ImportError:  # pragma: no cover
     """Module :mod:`typing` not required for Py27-compatible type comments."""
 
