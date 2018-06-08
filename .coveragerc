@@ -1,10 +1,11 @@
 [run]
 branch = True
+source = py2neo_compat
 
 [paths]
 source =
-    src/
-    */lib/python*/site-packages/
+    src/py2neo_compat
+    */site-packages/py2neo_compat
 
 [report]
 exclude_lines =
