@@ -80,6 +80,20 @@ def test_monkey_patch(klass, attr):
            getattr(klass_attr(p2n), attr).__doc__
 
 
+def test_monkey_patch_modules():
+    """Test that monkey patch makes expected symbols available."""
+
+    py2neo_compat.monkey_patch_py2neo()
+
+    assert sys.modules['py2neo.legacy']
+    assert py2neo.legacy is not None
+    assert py2neo.legacy.Index is not None
+
+    assert sys.modules['py2neo.batch']
+    assert py2neo.batch is not None
+    assert py2neo.batch.WriteBatch is not None
+
+
 @pytest.mark.integration
 def test_graph_metadata(neo4j_graph_object):
     """Test :func:`graph_metadata`."""

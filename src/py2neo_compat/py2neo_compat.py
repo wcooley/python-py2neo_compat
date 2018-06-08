@@ -194,11 +194,13 @@ def monkey_patch_py2neo_v1():
 
     py2neo_legacy = SimpleNamespace()
     sys.modules['py2neo.legacy'] = py2neo_legacy
+    py2neo.legacy = py2neo_legacy
     py2neo_legacy.LegacyWriteBatch = py2neo.neo4j.WriteBatch
     py2neo_legacy.Index = py2neo.neo4j.Index
 
     py2neo_batch = SimpleNamespace()
     sys.modules['py2neo.batch'] = py2neo_batch
+    py2neo.batch = py2neo_batch
     py2neo_batch.WriteBatch = py2neo.neo4j.WriteBatch
 
 
