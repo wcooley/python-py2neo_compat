@@ -254,7 +254,7 @@ def graph_metadata(graph, key=None):
 __all__ += ('graph_metadata',)
 
 
-def entity_to_dict(entity):
+def py2neo_entity_to_dict(entity):
     # type: (Union[Node,Relationship,PropertySet]) -> Dict[str, Any]
     """Convert an "entity" to a `dict`.
 
@@ -280,4 +280,4 @@ def entity_to_dict(entity):
     return entity
 
 
-__all__ += ('entity_to_dict',)
+__all__ += ('py2neo_entity_to_dict',)
