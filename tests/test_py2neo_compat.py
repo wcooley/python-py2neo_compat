@@ -164,3 +164,29 @@ def test_graph_cypher_stream(sample_graph):
     """)
 
     assert 1 == len(list(r))
+
+
+@pytest.mark.todo_v3
+@pytest.mark.integration
+def test_legacy_index(sample_graph):
+    # type: (py2neo.Graph) -> None
+    """Ensure :mod:`py2neo.legacy` & legacy indexes work."""
+    import py2neo.legacy
+
+    g = sample_graph
+
+    persons_idx = g.legacy.get_or_create_index(py2neo.Node, 'Persons')
+
+    assert isinstance(persons_idx, py2neo.legacy.Index)
+
+    jensenb = persons_idx.create_if_none('name', 'Babs Jensen',
+                                         {'name': 'Babs Jensen',
+                                          'given_name': 'Barbara',
+                                          'family_name': 'Jensen',
+                                          'username': 'jensenb'})
+
+    jensenb2 = g.legacy.get_indexed_node('Persons', 'name', 'Babs Jensen')
+
+    assert jensenb == jensenb2
+
+    persons_idx.remove(entity=jensenb)
