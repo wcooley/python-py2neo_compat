@@ -171,6 +171,7 @@ def monkey_patch_py2neo_v1():
     del legacy_prop
 
     def create_unique(relation):
+        # type: (Relationship) -> Tuple(Relationship)
         """Create a unique path like in py2neo 2.0.
 
         Only attempt to create a single relationship with this; both 2.0's
@@ -254,7 +255,7 @@ __all__ += ('graph_metadata',)
 
 
 def entity_to_dict(entity):
-    # type: (Union[Node,Relationship,PropertySet]) -> dict
+    # type: (Union[Node,Relationship,PropertySet]) -> Dict[str, Any]
     """Convert an "entity" to a `dict`.
 
     All three major versions are incompatible with how to get a dict
