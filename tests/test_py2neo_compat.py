@@ -134,3 +134,33 @@ def test_graph_delete_all(sample_graph):
 
     assert g.size == 0
     assert g.order == 0
+
+
+@pytest.mark.todo_v3
+@pytest.mark.integration
+def test_graph_cypher_execute(sample_graph):
+    # type: (py2neo.Graph) -> None
+    """Ensure :meth:`Graph.cypher.execute` works."""
+    g = sample_graph
+
+    r = g.cypher.execute("""
+        MATCH (head)-[points_to:points_to]->(tail)
+        RETURN head, points_to, tail 
+    """)
+
+    assert 1 == len(r)
+
+
+@pytest.mark.todo_v3
+@pytest.mark.integration
+def test_graph_cypher_stream(sample_graph):
+    # type: (py2neo.Graph) -> None
+    """Ensure :meth:`Graph.cypher.stream` works."""
+    g = sample_graph
+
+    r = g.cypher.stream("""
+        MATCH (head)-[points_to:points_to]->(tail)
+        RETURN head, points_to, tail 
+    """)
+
+    assert 1 == len(list(r))
