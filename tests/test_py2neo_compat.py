@@ -5,12 +5,14 @@
 
 from __future__ import absolute_import, print_function
 
+import inspect
 import operator
 import os
 import sys
 
 import pytest
 import py2neo
+import six
 
 from py2neo_compat.util import foremost
 from py2neo_compat import (
@@ -68,20 +70,27 @@ def test_import_symbol__all__(symbol):
         ('Relationship', 'pull'),
     ]
 )
-def test_monkey_patch(klass, attr):
+def test_monkey_patch_classes(klass, attr):
     """Test that monkey patch installs the expected symbols."""
 
     py2neo_compat.monkey_patch_py2neo()
 
-    klass_attr = operator.attrgetter(klass)
+    klass_in_py2neo = getattr(py2neo, klass)
+    attr_in_py2neo = getattr(klass_in_py2neo, attr)
+    klass_in_py2neo_compat = getattr(py2neo_compat, klass)
+    attr_in_py2neo_compat = getattr(klass_in_py2neo_compat, attr)
 
-    assert klass_attr(py2neo) is not None
-    assert klass_attr(p2n) is not None
-    assert klass_attr(py2neo) == klass_attr(p2n)
-    assert getattr(klass_attr(py2neo), attr) is not None
-    assert getattr(klass_attr(p2n), attr) is not None
-    assert getattr(klass_attr(py2neo), attr).__doc__ is \
-           getattr(klass_attr(p2n), attr).__doc__
+    assert klass_in_py2neo is not None
+    assert klass_in_py2neo_compat is not None
+    assert klass_in_py2neo is klass_in_py2neo_compat
+    assert attr_in_py2neo is not None
+    assert attr_in_py2neo_compat is not None
+    if six.PY2 and inspect.ismethod(attr_in_py2neo):
+        assert repr(attr_in_py2neo) == repr(attr_in_py2neo_compat)
+    else:
+        assert attr_in_py2neo is attr_in_py2neo_compat
+
+    assert attr_in_py2neo.__doc__ is attr_in_py2neo_compat.__doc__
 
 
 def test_monkey_patch_modules():
