@@ -117,24 +117,20 @@ def test_graph_metadata(neo4j_graph_object):
 
 @pytest.mark.todo_v3
 @pytest.mark.integration
-def test_graph_delete_all(neo4j_uri):
+def test_graph_delete_all(sample_graph):
     # type: (py2neo.Graph) -> None
     """Test :meth:`Graph.delete_all`."""
 
-    neo4j_graph_object = Graph(neo4j_uri)
-    g = neo4j_graph_object
-    assert g.neo4j_version
-
-    node_a = foremost(g.create(node({'name': 'a', 'py2neo_ver': py2neo_ver})))
-    node_b = foremost(g.create(node({'name': 'b', 'py2neo_ver': py2neo_ver})))
     py2neo_compat.monkey_patch_py2neo()
 
-    g.create((node_a, 'points_to', node_b))
+    g = sample_graph
 
     assert g.size > 0
     assert g.order > 0
 
     assert hasattr(g, 'delete_all')
+
     g.delete_all()
+
     assert g.size == 0
     assert g.order == 0
