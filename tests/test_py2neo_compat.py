@@ -13,16 +13,23 @@ import pytest
 import py2neo
 
 from py2neo_compat.util import foremost
-from py2neo_compat.py2neo_compat import py2neo_ver
+from py2neo_compat import (
+    create_node,
+    graph_metadata,
+    Node,
+    py2neo_ver,
+    Relationship,
+    to_dict,
+)
+import py2neo_compat
 
 
 def test_imported_symbols():
     """Test that some essential symbols exist."""
-    import py2neo_compat.py2neo_compat as p2n
 
-    assert p2n.Graph
-    assert p2n.Node
-    assert p2n.Relationship
+    assert py2neo_compat.Graph
+    assert py2neo_compat.Node
+    assert py2neo_compat.Relationship
 
 
 @pytest.mark.parametrize(
@@ -40,10 +47,9 @@ def test_imported_symbols():
 )
 def test_import_symbol__all__(symbol):
     """Test symbols in `__all__`."""
-    import py2neo_compat.py2neo_compat as p2n
-
-    assert symbol in p2n.__all__
-    assert hasattr(p2n, symbol)
+    # assert symbol in py2neo_compat.__all__
+    assert getattr(py2neo_compat, symbol)
+    # assert getattr(py2neo, symbol)
 
 
 @pytest.mark.parametrize(
@@ -64,10 +70,8 @@ def test_import_symbol__all__(symbol):
 )
 def test_monkey_patch(klass, attr):
     """Test that monkey patch installs the expected symbols."""
-    import py2neo_compat.py2neo_compat as p2n
-    import py2neo
 
-    p2n.monkey_patch_py2neo()
+    py2neo_compat.monkey_patch_py2neo()
 
     klass_attr = operator.attrgetter(klass)
 
@@ -97,9 +101,6 @@ def test_monkey_patch_modules():
 @pytest.mark.integration
 def test_graph_metadata(neo4j_graph_object):
     """Test :func:`graph_metadata`."""
-
-    from py2neo_compat.py2neo_compat import graph_metadata
-
     assert len(graph_metadata(neo4j_graph_object)) > 0
     assert graph_metadata(neo4j_graph_object, 'indexes')\
         .endswith('/schema/index')
@@ -110,10 +111,6 @@ def test_graph_metadata(neo4j_graph_object):
 def test_graph_delete_all(neo4j_uri):
     # type: (py2neo.Graph) -> None
     """Test :meth:`Graph.delete_all`."""
-    import py2neo_compat.py2neo_compat as p2n
-    from py2neo_compat.py2neo_compat import Graph, rel, node
-
-    p2n.monkey_patch_py2neo()
 
     neo4j_graph_object = Graph(neo4j_uri)
     g = neo4j_graph_object
@@ -121,6 +118,7 @@ def test_graph_delete_all(neo4j_uri):
 
     node_a = foremost(g.create(node({'name': 'a', 'py2neo_ver': py2neo_ver})))
     node_b = foremost(g.create(node({'name': 'b', 'py2neo_ver': py2neo_ver})))
+    py2neo_compat.monkey_patch_py2neo()
 
     g.create((node_a, 'points_to', node_b))
 
