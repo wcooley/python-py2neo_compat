@@ -10,7 +10,7 @@ import pytest  # noqa
 import logging
 
 import py2neo_compat
-from py2neo_compat import Graph, py2neo_ver, node
+from py2neo_compat import Graph, py2neo_ver, node, create_node
 from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -98,8 +98,10 @@ def sample_graph(neo4j_graph):
     g = neo4j_graph
     assert g.neo4j_version
 
-    node_a = foremost(g.create(node({'name': 'a', 'py2neo_ver': py2neo_ver})))
-    node_b = foremost(g.create(node({'name': 'b', 'py2neo_ver': py2neo_ver})))
+    node_a = create_node(graph=g, labels=['thingy'],
+                         properties={'name': 'a', 'py2neo_ver': py2neo_ver})
+    node_b = create_node(graph=g, labels=['thingy'],
+                         properties={'name': 'b', 'py2neo_ver': py2neo_ver})
 
     g.create((node_a, 'points_to', node_b))
 

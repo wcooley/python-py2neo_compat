@@ -136,6 +136,56 @@ def test_graph_delete_all(sample_graph):
     assert g.order == 0
 
 
+@pytest.mark.integration
+@pytest.mark.parametrize(('labels', 'properties'), [
+    (('restauranteur',), {'name': 'Alice'}),        # Label, property
+    ((), {}),                                       # Empty iterable, empty map
+    (None, None),                                   # Nada, Nada
+    ({'person'}, {}),                               # Label, empty map
+    ([], {'name': 'Alice'}),                        # Empty iterable, property
+])
+def test_create_node(neo4j_graph, labels, properties):
+    """Test :func:`~py2neo_compat.create_node`."""
+
+    node = create_node(graph=neo4j_graph, labels=labels, properties=properties)
+    assert node is not None
+    assert node.labels == (set(labels) if labels else set())
+    assert to_dict(node) == (dict(properties) if properties else {})
+
+
+@pytest.mark.integration
+def test_graph_create(neo4j_graph):
+    # type: (Graph) -> None
+
+    def _assert_alice_knows_bob(alice, bob, knows):
+        assert isinstance(alice, Node)
+        assert isinstance(bob, Node)
+        assert isinstance(knows, Relationship)
+
+        # Remember Alice? This song's about Alice.
+        assert alice['name'] == 'Alice'
+        assert bob['name'] == 'Bob'
+        assert knows.start_node == alice
+        assert knows.end_node == bob
+        assert knows['since'] == '2006'
+
+    g = neo4j_graph
+    alice = create_node(g, properties={'name': 'Alice'})
+    bob = create_node(g, properties={'name': 'Bob'})
+    knows = foremost(g.create((alice, 'KNOWS', bob, {'since': '2006'})))
+
+    _assert_alice_knows_bob(alice, bob, knows)
+
+    del alice, bob, knows
+
+    alice, knows, bob = foremost(g.cypher.execute("""
+        MATCH (n1{name:"Alice"})-[r:KNOWS]->(n2{name:"Bob"})
+        RETURN n1, r, n2
+        """))
+
+    _assert_alice_knows_bob(alice, bob, knows)
+
+
 @pytest.mark.todo_v3
 @pytest.mark.integration
 def test_graph_create_unique(sample_graph):

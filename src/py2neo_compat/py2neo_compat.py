@@ -284,3 +284,44 @@ def py2neo_entity_to_dict(entity):
 
 to_dict = py2neo_entity_to_dict
 __all__ += ('py2neo_entity_to_dict', 'to_dict')
+
+
+if py2neo_ver == 1:
+    def create_node(
+            graph=None,  # type: Optional[py2neo.Graph]
+            labels=None,  # type: Optional[Iterable[str]]
+            properties=None,  # type: Optional[Mapping[str, Any]]
+    ):
+        # type: (...) -> Node
+        """Cross-version function to create a node."""
+        properties = properties or {}
+
+        if labels and graph is None:
+            raise TypeError('Parameter "graph" is required for py2neo v1 with'
+                            ' labels')
+
+        node = py2neo.node(properties)
+        if graph is not None:
+            node = foremost(graph.create(node))
+        if labels:
+            node.add_labels(*labels)
+        return node
+
+elif py2neo_ver == 2:
+    def create_node(
+        graph=None,  # type: Optional[py2neo.Graph]
+        labels=None,  # type: Optional[Iterable[str]]
+        properties=None,  # type: Optional[Mapping[str, Any]]
+    ):
+        # type: (...) -> Node
+        """Cross-version function to create a node."""
+        properties = properties or {}
+        labels = labels or []
+
+        node = py2neo.node(*labels, **properties)
+        if graph is not None:
+            node = foremost(graph.create(node))
+        return node
+
+
+__all__ += ('create_node',)
