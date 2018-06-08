@@ -20,6 +20,11 @@ pytest.mark.todo_v3 = pytest.mark.xfail(py2neo_ver==3,
                                         strict=True)
 
 
+@pytest.fixture(scope='session', autouse=True)
+def logging_config():
+    logging.getLogger('py2neo').setLevel(logging.WARNING)
+
+
 @pytest.fixture(scope='session')
 def neo4j_uri():
     # type: () -> str
