@@ -9,6 +9,7 @@ import os
 import pytest  # noqa
 import logging
 
+import py2neo_compat
 from py2neo_compat import Graph, py2neo_ver, node
 from py2neo_compat.util import foremost
 
@@ -76,6 +77,7 @@ def neo4j_graph_schemaless(neo4j_graph_object):
 def neo4j_graph_empty(neo4j_graph_object):
     # type: (Graph) -> Graph
     """Graph instance with no nodes or relationships."""
+    py2neo_compat.monkey_patch_py2neo()
     graph = neo4j_graph_object
     graph.delete_all()
     return graph
