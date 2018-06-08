@@ -186,6 +186,15 @@ def test_graph_create(neo4j_graph):
     _assert_alice_knows_bob(alice, bob, knows)
 
 
+@pytest.mark.integration
+def test_can_create_empty_node(neo4j_graph):
+    """Test :func:`~py2neo_compat._create` with an empty node."""
+    empty = create_node(graph=neo4j_graph)
+    assert empty is not None
+    assert empty.get_labels() == set()
+    assert empty.get_properties() == {}
+
+
 @pytest.mark.todo_v3
 @pytest.mark.integration
 def test_graph_create_unique(sample_graph_and_nodes):
