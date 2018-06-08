@@ -188,17 +188,12 @@ def test_graph_create(neo4j_graph):
 
 @pytest.mark.todo_v3
 @pytest.mark.integration
-def test_graph_create_unique(sample_graph):
+def test_graph_create_unique(sample_graph_and_nodes):
     # type: (py2neo.Graph) -> None
 
     py2neo_compat.monkey_patch_py2neo()
 
-    g = sample_graph
-
-    node_a = g.find_one('thingy', property_key='name', property_value='a')
-    assert None is not node_a
-    node_b = g.find_one('thingy', property_key='name', property_value='b')
-    assert None is not node_b
+    g, node_a, node_b = sample_graph_and_nodes
 
     r = g.create_unique(py2neo.rel(node_a, 'has_a', node_b))
 

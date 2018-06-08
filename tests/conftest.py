@@ -93,8 +93,8 @@ def neo4j_graph(neo4j_graph_schemaless, neo4j_graph_empty):
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def sample_graph(neo4j_graph):
-    """Sample graph with some data."""
+def sample_graph_and_nodes(neo4j_graph):
+    """Sample graph with some nodes."""
     g = neo4j_graph
     assert g.neo4j_version
 
@@ -103,10 +103,18 @@ def sample_graph(neo4j_graph):
     node_b = create_node(graph=g, labels=['thingy'],
                          properties={'name': 'b', 'py2neo_ver': py2neo_ver})
 
+    assert None is not node_a
+    assert None is not node_b
+
     g.create((node_a, 'points_to', node_b))
 
     assert g.size > 0
     assert g.order > 0
 
-    return g
+    return g, node_a, node_b
 
+
+@pytest.fixture
+def sample_graph(sample_graph_and_nodes):
+    """Sample graph only."""
+    return foremost(sample_graph_and_nodes)
