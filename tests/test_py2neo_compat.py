@@ -138,6 +138,25 @@ def test_graph_delete_all(sample_graph):
 
 @pytest.mark.todo_v3
 @pytest.mark.integration
+def test_graph_create_unique(sample_graph):
+    # type: (py2neo.Graph) -> None
+
+    py2neo_compat.monkey_patch_py2neo()
+
+    g = sample_graph
+
+    node_a = g.find_one('thingy', property_key='name', property_value='a')
+    assert None is not node_a
+    node_b = g.find_one('thingy', property_key='name', property_value='b')
+    assert None is not node_b
+
+    r = g.create_unique(py2neo.rel(node_a, 'has_a', node_b))
+
+    assert None is not r
+
+
+@pytest.mark.todo_v3
+@pytest.mark.integration
 def test_graph_cypher_execute(sample_graph):
     # type: (py2neo.Graph) -> None
     """Ensure :meth:`Graph.cypher.execute` works."""
