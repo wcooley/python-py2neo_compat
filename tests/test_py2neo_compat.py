@@ -200,6 +200,27 @@ def test_graph_create_unique(sample_graph_and_nodes):
     assert None is not r
 
 
+@pytest.mark.integration
+def test_update_properties(sample_graph_and_nodes):
+    """Ensure :func:`py2neo_compat.update_properties` works."""
+    g, node_a, _ = sample_graph_and_nodes
+
+    assert 'foo' not in node_a
+
+    py2neo_compat.update_properties(node_a, {'foo': 'bar'})
+    node_a.push()
+
+    try:
+        node_a.cache.clear()
+    except AttributeError:
+        pass
+    node_a2 = foremost(g.cypher.execute('MATCH (n:thingy {name: "a"}) RETURN n')).n
+    assert id(node_a) != id(node_a2)
+
+    assert 'foo' in node_a2
+    assert 'bar' == node_a2['foo']
+
+
 @pytest.mark.todo_v3
 @pytest.mark.integration
 def test_graph_cypher_execute(sample_graph):

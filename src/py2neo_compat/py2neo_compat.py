@@ -325,3 +325,14 @@ elif py2neo_ver == 2:
 
 
 __all__ += ('create_node',)
+
+
+if py2neo_ver == 1:
+    def update_properties(entity, properties):
+        entity.update_properties(properties)
+elif py2neo_ver == 2:
+    def update_properties(entity, properties):
+        entity.properties.update(properties)
+
+
+__all__ += ('update_properties',)
