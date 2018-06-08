@@ -284,3 +284,45 @@ def test_legacy_index(sample_graph):
     assert jensenb == jensenb2
 
     persons_idx.remove(entity=jensenb)
+
+
+@pytest.mark.unit
+def test_can_check_labels_for_abstract_node():
+    # type: () -> None
+
+    py2neo_compat.monkey_patch_py2neo()
+
+    n = py2neo.node({'name': 'Babs Jensen'})
+    assert {} == n.labels
+
+
+@pytest.mark.todo_v3
+@pytest.mark.integration
+def test_node_labels(neo4j_graph):
+    # type: (py2neo.Graph) -> None
+
+    py2neo_compat.monkey_patch_py2neo()
+
+    g = neo4j_graph
+
+    sample_label_set = {'person', 'character'}
+
+    jensenb = create_node(graph=g, labels=sample_label_set,
+                          properties={
+        'name': 'Babs Jensen',
+        'username': 'jensenb'
+    })
+
+    # assert set() == jensenb.labels
+    # jensenb.labels |= sample_label_set
+    # jensenb.push()
+    assert sample_label_set == jensenb.labels
+
+    # jensenb.labels |= {'role'}
+    # jensenb.push()
+    #
+    # assert sample_label_set | {'role'} == jensenb.labels
+    #
+    # jensenb.labels = []
+    # jensenb.push()
+    # assert set() == jensenb.labels

@@ -190,8 +190,21 @@ def monkey_patch_py2neo_v1():
     # py2neo 1.6 did everything eagerly; 2.0 requires explicit sync
     Node.push = Node.refresh
     Node.pull = Node.refresh
+
+    # FIXME
+    # class DummyLabelSet(wrapt.ObjectProxy):
+    #     def __init__(self, node):
+    #         super(DummyLabelSet, self).__init__(node.)
     # noinspection PyPropertyAccess
-    Node.labels = property(lambda s: s.get_labels())
+    def _get_labels(self):
+        try:
+            return self.get_labels()
+        except TypeError as excp:
+            if 'Abstract nodes cannot have labels' in str(excp):
+                return {}
+            else:
+                raise
+    Node.labels = property(_get_labels)
     Relationship.push = Relationship.refresh
     Relationship.pull = Relationship.refresh
 
