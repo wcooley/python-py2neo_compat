@@ -112,6 +112,9 @@ def monkey_patch_py2neo():
         monkey_patch_py2neo_v3()
 
 
+__all__ += ('monkey_patch_py2neo',)
+
+
 # noinspection PyUnresolvedReferences
 def monkey_patch_py2neo_v1():
     # type: () -> None
@@ -245,6 +248,9 @@ def graph_metadata(graph, key=None):
         return metadata
 
 
+__all__ += ('graph_metadata',)
+
+
 def entity_to_dict(entity):
     # type: (Union[Node,Relationship,PropertySet]) -> dict
     """Convert an "entity" to a `dict`.
@@ -269,3 +275,6 @@ def entity_to_dict(entity):
     finally:
         entity = dict(entity)
     return entity
+
+
+__all__ += ('entity_to_dict',)
