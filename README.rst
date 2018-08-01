@@ -111,7 +111,7 @@ Features
     * ``graph_metadata``
     * ``create_node``
     * ``py2neo_entity_to_dict`` aka ``to_dict``: Dump the properties of a
-      node or relationship as a :py:class:`dict`.
+      node or relationship as a ``dict``.
 
   * ``schema``:
 
