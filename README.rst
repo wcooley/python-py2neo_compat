@@ -6,16 +6,19 @@ py2neo_compat
 .. image:: https://img.shields.io/pypi/v/py2neo_compat.svg
         :target: https://pypi.python.org/pypi/py2neo_compat
 
-.. image:: https://img.shields.io/travis/wcooley/py2neo_compat.svg
-        :target: https://travis-ci.org/wcooley/py2neo_compat
+..
+    .. image:: https://img.shields.io/travis/wcooley/py2neo_compat.svg
+            :target: https://travis-ci.org/wcooley/py2neo_compat
 
-.. image:: https://readthedocs.org/projects/py2neo-compat/badge/?version=latest
-        :target: https://py2neo-compat.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
+..
+    .. image:: https://readthedocs.org/projects/py2neo-compat/badge/?version=latest
+            :target: https://py2neo-compat.readthedocs.io/en/latest/?badge=latest
+            :alt: Documentation Status
 
-.. image:: https://pyup.io/repos/github/wcooley/py2neo_compat/shield.svg
-     :target: https://pyup.io/repos/github/wcooley/py2neo_compat/
-     :alt: Updates
+..
+    .. image:: https://pyup.io/repos/github/wcooley/py2neo_compat/shield.svg
+         :target: https://pyup.io/repos/github/wcooley/py2neo_compat/
+         :alt: Updates
 
 
 Description
