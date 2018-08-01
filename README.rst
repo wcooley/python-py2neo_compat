@@ -111,7 +111,7 @@ Features
     * ``graph_metadata``
     * ``create_node``
     * ``py2neo_entity_to_dict`` aka ``to_dict``: Dump the properties of a
-      node or relationship as a :py:class:`dict`.
+      node or relationship as a ``dict``.
 
   * ``schema``:
 
@@ -172,9 +172,7 @@ Credits
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 
 .. _py2neo: http://py2neo.org
-.. _`draft post`: https://github.com/wcooley/wcooley.github.io/blob/master/_drafts/py2neo-upgrade.md
 .. _gryaml: https://github.com/wcooley/python-gryaml
-.. _CHANGELOG: https://github.com/technige/py2neo/blob/v4/CHANGELOG.md#removed
 .. _`Bolt-only Python driver`: https://neo4j.com/docs/api/python-driver/current/
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
