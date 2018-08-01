@@ -143,8 +143,8 @@ Features
     of ``set``. The easy way would be to add the v1 methods to v2, but I
     am trying to avoid propagating the v1 API; the harder way would be to
     implement a set-like class for v1, but considerably more work. Another
-    alternative is a compatility function, which ends up being another API.
-    I have not really needed to manipulate labels after creation.
+    alternative is a compatibility function, which ends up being another
+    API. I have not really needed to manipulate labels after creation.
 
 * Free software: Apache Software License 2.0
 
