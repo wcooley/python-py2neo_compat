@@ -61,16 +61,6 @@ I also started a separate project called gryaml_, to load sample data from
 YAML files, which also needed to support multiple versions in order to be
 run as test fixtures.
 
-Then v3 came out and changed a bunch of stuff; examples are in my notes in a
-`draft post`_ intended for my github.io page. I haven't managed to work
-through most of it; the notes were just a few things I noticed.
-
-After stalling out last year, v4 appears to be making progress again and the
-CHANGELOG_ (at least there is one this time!) is disheartening: Almost all of
-the attributes in the "Removed" list are used extensively in my codebases.  (I
-also note that I see nothing about deprecation of these in the v3
-documentation.)
-
 
 Features
 --------
@@ -174,18 +164,6 @@ Approaches other than monkey-patching:
 
 This would might work better for Nodes and Relationships and the basic
 Graph features than the schema, batch and legacy index support.
-
-
-Soapbox
--------
-
-At this point, I cannot recommend using Neo4j for Python applications.
-I like the Neo4j database that I have used (community ed.) and I like the
-Cypher query language, but the Driver Team Lead at Neo4j does not seem to be
-able or willing to develop a stable API for their Python drivers, aside from
-the painfully minimal `Bolt-only Python driver`_.
-(There are other community-developed drivers, but none that I've found seem
-to be actively maintained.)
 
 
 Credits
