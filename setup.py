@@ -38,6 +38,7 @@ setup(
     use_scm_version=True,
     description="Compatibility layer for py2neo",
     long_description=readme + '\n\n' + history,
+    long_description_content_type='text/x-rst',
     author="Wil Cooley",
     author_email='wcooley@nakedape.cc',
     url='https://github.com/wcooley/py2neo_compat',
@@ -47,7 +48,7 @@ setup(
     install_requires=requirements,
     license="Apache Software License 2.0",
     zip_safe=False,
-    keywords='py2neo_compat py2neo compat',
+    keywords='py2neo_compat py2neo compat neo4j',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
@@ -56,9 +57,9 @@ setup(
         "Programming Language :: Python :: 2",
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     extras_require={
         'test': test_requirements,

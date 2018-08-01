@@ -14,7 +14,7 @@ try:
     # noinspection PyCompatibility,PyUnresolvedReferences
     from typing import NamedTuple, Iterator, Iterable, Tuple, List, Union
     OptionalStrBool = Union[str, bool, None]
-except ImportError:
+except ImportError:  # pragma: no cover
     "Module 'typing' is optional for 2.7-compatible types in comments"
 
 # This works for 1.6, 2, 3.1 but not 4b2

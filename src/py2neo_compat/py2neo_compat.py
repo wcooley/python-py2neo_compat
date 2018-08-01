@@ -10,9 +10,11 @@ from collections import namedtuple
 
 try:
     # noinspection PyUnresolvedReferences
-    from typing import Any, Dict, List, Mapping, NamedTuple, Optional, \
-        Union, Iterator, Tuple  # noqa
-except ImportError:
+    from typing import (
+        Any, Dict, List, Mapping, NamedTuple, Optional,
+        Union, Tuple, Iterable,  # noqa
+    )
+except ImportError:  # pragma: no cover
     """Module :mod:`typing` not required for Py27-compatible type comments."""
 
 import six
@@ -25,9 +27,9 @@ if py2neo.__version__.startswith('1.6'):
     py2neo_ver = 1
 elif py2neo.__version__.startswith('2.0'):
     py2neo_ver = 2
-elif py2neo.__version__.startswith('3'):
+elif py2neo.__version__.startswith('3'):  # pragma: no cover
     py2neo_ver = 3
-else:
+else:  # pragma: no cover
     raise NotImplementedError("py2neo %d not supported" % py2neo.__version__)
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -112,6 +114,9 @@ def monkey_patch_py2neo():
         monkey_patch_py2neo_v3()
 
 
+__all__ += ('monkey_patch_py2neo',)
+
+
 # noinspection PyUnresolvedReferences
 def monkey_patch_py2neo_v1():
     # type: () -> None
@@ -168,6 +173,7 @@ def monkey_patch_py2neo_v1():
     del legacy_prop
 
     def create_unique(relation):
+        # type: (Relationship) -> Tuple(Relationship)
         """Create a unique path like in py2neo 2.0.
 
         Only attempt to create a single relationship with this; both 2.0's
@@ -191,11 +197,13 @@ def monkey_patch_py2neo_v1():
 
     py2neo_legacy = SimpleNamespace()
     sys.modules['py2neo.legacy'] = py2neo_legacy
+    py2neo.legacy = py2neo_legacy
     py2neo_legacy.LegacyWriteBatch = py2neo.neo4j.WriteBatch
     py2neo_legacy.Index = py2neo.neo4j.Index
 
     py2neo_batch = SimpleNamespace()
     sys.modules['py2neo.batch'] = py2neo_batch
+    py2neo.batch = py2neo_batch
     py2neo_batch.WriteBatch = py2neo.neo4j.WriteBatch
 
 
@@ -245,8 +253,11 @@ def graph_metadata(graph, key=None):
         return metadata
 
 
-def entity_to_dict(entity):
-    # type: (Union[Node,Relationship,PropertySet]) -> dict
+__all__ += ('graph_metadata',)
+
+
+def py2neo_entity_to_dict(entity):
+    # type: (Union[Node,Relationship,PropertySet]) -> Dict[str, Any]
     """Convert an "entity" to a `dict`.
 
     All three major versions are incompatible with how to get a dict
@@ -269,3 +280,59 @@ def entity_to_dict(entity):
     finally:
         entity = dict(entity)
     return entity
+
+
+to_dict = py2neo_entity_to_dict
+__all__ += ('py2neo_entity_to_dict', 'to_dict')
+
+
+if py2neo_ver == 1:
+    def create_node(
+            graph=None,  # type: Optional[py2neo.Graph]
+            labels=None,  # type: Optional[Iterable[str]]
+            properties=None,  # type: Optional[Mapping[str, Any]]
+    ):
+        # type: (...) -> Node
+        """Cross-version function to create a node."""
+        properties = properties or {}
+
+        if labels and graph is None:
+            raise TypeError('Parameter "graph" is required for py2neo v1 with'
+                            ' labels')
+
+        node = py2neo.node(properties)
+        if graph is not None:
+            node = foremost(graph.create(node))
+        if labels:
+            node.add_labels(*labels)
+        return node
+
+elif py2neo_ver == 2:
+    def create_node(
+        graph=None,  # type: Optional[py2neo.Graph]
+        labels=None,  # type: Optional[Iterable[str]]
+        properties=None,  # type: Optional[Mapping[str, Any]]
+    ):
+        # type: (...) -> Node
+        """Cross-version function to create a node."""
+        properties = properties or {}
+        labels = labels or []
+
+        node = py2neo.node(*labels, **properties)
+        if graph is not None:
+            node = foremost(graph.create(node))
+        return node
+
+
+__all__ += ('create_node',)
+
+
+if py2neo_ver == 1:
+    def update_properties(entity, properties):
+        entity.update_properties(properties)
+elif py2neo_ver == 2:
+    def update_properties(entity, properties):
+        entity.properties.update(properties)
+
+
+__all__ += ('update_properties',)
