@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, print_function
 
+import os
 from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
@@ -13,9 +14,12 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
+# Enable setting version higher for testing
+PY2NEO_MAX_VERSION = os.environ.get('PY2NEO_MAX_VERSION', '2')
+
 requirements = [
     'boltons',
-    'py2neo',
+    'py2neo>=1.6,<={}.999'.format(PY2NEO_MAX_VERSION),
     'six',
     'typing',
 ]
