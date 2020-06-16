@@ -21,7 +21,7 @@ requirements = [
     'boltons',
     'py2neo>=1.6,<={}.999'.format(PY2NEO_MAX_VERSION),
     'six',
-    'typing',
+    'typing;python_version<"3.3"',
 ]
 
 setup_requirements = [
