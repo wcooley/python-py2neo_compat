@@ -40,18 +40,18 @@ __all__ = ('py2neo_ver',)
 
 _ = ImportMap = namedtuple('ImportMap', ('name', 'v1', 'v2', 'v3'))
 
-IMPORT_TABLE = [    # v1                    v2          v3
+IMPORT_TABLE = [    # v1            v2          v3
 _('Graph',          '.neo4j.GraphDatabaseService',
-                                            '.',        '.'),
-_('Node',           '.neo4j.',              '.',        '.'),
-_('Relationship',   '.neo4j.',              '.',        '.'),
-_('Record',         '.neo4j.',              '.cypher.core.', '.'),
-_('node',           '.',                    '.',        '.cast_node'),
-_('rel',            '.',                    '.',        '.cast_relationship'),
-_('ServerError',    '.neo4j.',              '.core.',   '.'),
-_('ClientError',    '.neo4j.',              '.core.',   '.'),
-_('URI',            '.neo4j.',              '.core.',   '.'),
-_('Resource',       '.neo4j.',              '.core.',   '.database.'),
+                                    '.',        '.'),
+_('Node',           '.neo4j.',      '.',        '.'),
+_('Relationship',   '.neo4j.',      '.',        '.'),
+_('Record',         '.neo4j.',      '.cypher.core.','.'),
+_('node',           '.',            '.',        '.cast_node'),
+_('rel',            '.',            '.',        '.cast_relationship'),
+_('ServerError',    '.neo4j.',      '.core.',   '.'),
+_('ClientError',    '.neo4j.',      '.core.',   '.'),
+_('URI',            '.neo4j.',      '.core.',   '.'),
+_('Resource',       '.neo4j.',      '.core.',   '.database.'),
 _('authenticate',   '.neo4j.',      '.',        '.database.auth.'),
 ]
 
