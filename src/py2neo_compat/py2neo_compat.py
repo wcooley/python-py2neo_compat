@@ -52,6 +52,7 @@ _('ServerError',    '.neo4j.',              '.core.',   '.'),
 _('ClientError',    '.neo4j.',              '.core.',   '.'),
 _('URI',            '.neo4j.',              '.core.',   '.'),
 _('Resource',       '.neo4j.',              '.core.',   '.database.'),
+_('authenticate',   '.neo4j.',      '.',        '.database.auth.'),
 ]
 
 del _
