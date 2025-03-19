@@ -126,7 +126,7 @@ def monkey_patch_py2neo_v1():
     # type: () -> None
     """Install compat code into py2neo v1 mod namespace & objects."""
 
-    global Graph, Node, Relationship
+    global Graph, Node, Relationship, Resource
 
     Graph.delete_all = Graph.clear
     Graph.uri = Graph.__uri__
@@ -199,6 +199,9 @@ def monkey_patch_py2neo_v1():
     Relationship.push = Relationship.refresh
     Relationship.pull = Relationship.refresh
 
+    # py2neo >= 2.0
+    Resource.graph = Resource.graph_db
+
     py2neo_legacy = SimpleNamespace()
     sys.modules['py2neo.legacy'] = py2neo_legacy
     py2neo.legacy = py2neo_legacy
@@ -222,6 +225,8 @@ def monkey_patch_py2neo_v2():
     py2neo.Record = py2neo.cypher.core.Record
     py2neo.ServerError = py2neo.core.ServerError
     py2neo.URI = py2neo.core.URI
+
+    py2neo.core.Service.graph_db = py2neo.core.Service.graph
 
 
 def monkey_patch_py2neo_v3():
