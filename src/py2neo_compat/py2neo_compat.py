@@ -98,6 +98,9 @@ elif py2neo_ver == 3:
     from py2neo import PropertyDict
     py2neo_property_classes += (PropertyDict,)
 
+__all__ += tuple(p.__name__ for p in py2neo_property_classes)
+__all__ += ('py2neo_property_classes',)
+
 
 def monkey_patch_py2neo():
     # type: () -> None
