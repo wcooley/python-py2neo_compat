@@ -285,8 +285,12 @@ def py2neo_entity_to_dict(entity):
         entity = dict(entity)
     return entity
 
-
 to_dict = py2neo_entity_to_dict
+
+# Attach `to_dict` to base classes for Node/Relationship
+for cls in py2neo_property_classes:
+    six.create_bound_method(to_dict, cls)
+
 __all__ += ('py2neo_entity_to_dict', 'to_dict')
 
 
