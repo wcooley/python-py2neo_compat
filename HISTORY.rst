@@ -2,6 +2,15 @@
 History
 =======
 
+1.0.3 (2025-05-25)
+------------------
+
+* Add graph/graph_db compatibility mapping.
+* Bind 'to_dict' to property classes, so rather than being short and ambiguous
+  or long and obnoxious, it can just be called like a normal method.
+* Fix 'fields' being removed as a named parameter in NamedTuple.
+* Drop Python 2.7 support.
+
 1.0.2 (2020-06-16)
 ------------------
 
