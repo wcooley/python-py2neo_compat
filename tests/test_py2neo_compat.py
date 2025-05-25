@@ -194,6 +194,11 @@ def test_can_create_empty_node(neo4j_graph):
     assert empty.get_labels() == set()
     assert empty.get_properties() == {}
 
+@pytest.mark.integration
+def test_can_get_graph_from_node(neo4j_graph):
+    new_node = create_node(graph=neo4j_graph)
+    assert new_node is not None
+    assert new_node.graph == neo4j_graph
 
 @pytest.mark.todo_v3
 @pytest.mark.integration
@@ -239,7 +244,7 @@ def test_graph_cypher_execute(sample_graph):
 
     r = g.cypher.execute("""
         MATCH (head)-[points_to:points_to]->(tail)
-        RETURN head, points_to, tail 
+        RETURN head, points_to, tail
     """)
 
     assert 1 == len(r)
@@ -254,7 +259,7 @@ def test_graph_cypher_stream(sample_graph):
 
     r = g.cypher.stream("""
         MATCH (head)-[points_to:points_to]->(tail)
-        RETURN head, points_to, tail 
+        RETURN head, points_to, tail
     """)
 
     assert 1 == len(list(r))

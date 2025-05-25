@@ -98,6 +98,9 @@ elif py2neo_ver == 3:
     from py2neo import PropertyDict
     py2neo_property_classes += (PropertyDict,)
 
+__all__ += tuple(p.__name__ for p in py2neo_property_classes)
+__all__ += ('py2neo_property_classes',)
+
 
 def monkey_patch_py2neo():
     # type: () -> None
@@ -123,7 +126,7 @@ def monkey_patch_py2neo_v1():
     # type: () -> None
     """Install compat code into py2neo v1 mod namespace & objects."""
 
-    global Graph, Node, Relationship
+    global Graph, Node, Relationship, Resource
 
     Graph.delete_all = Graph.clear
     Graph.uri = Graph.__uri__
@@ -196,6 +199,9 @@ def monkey_patch_py2neo_v1():
     Relationship.push = Relationship.refresh
     Relationship.pull = Relationship.refresh
 
+    # py2neo >= 2.0
+    Resource.graph = Resource.graph_db
+
     py2neo_legacy = SimpleNamespace()
     sys.modules['py2neo.legacy'] = py2neo_legacy
     py2neo.legacy = py2neo_legacy
@@ -219,6 +225,8 @@ def monkey_patch_py2neo_v2():
     py2neo.Record = py2neo.cypher.core.Record
     py2neo.ServerError = py2neo.core.ServerError
     py2neo.URI = py2neo.core.URI
+
+    py2neo.core.Service.graph_db = py2neo.core.Service.graph
 
 
 def monkey_patch_py2neo_v3():
@@ -282,8 +290,12 @@ def py2neo_entity_to_dict(entity):
         entity = dict(entity)
     return entity
 
-
 to_dict = py2neo_entity_to_dict
+
+# Attach `to_dict` to base classes for Node/Relationship
+for cls in py2neo_property_classes:
+    six.create_bound_method(to_dict, cls)
+
 __all__ += ('py2neo_entity_to_dict', 'to_dict')
 
 

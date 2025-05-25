@@ -27,10 +27,10 @@ from .py2neo_compat import Graph, graph_metadata, py2neo_ver
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
 
-SchemaItem = NamedTuple('SchemaItem', fields=(
+SchemaItem = NamedTuple('SchemaItem', [
     ('label', str),
     ('property_key', str),
-))
+])
 
 
 def schema_constraints(graph):
@@ -85,11 +85,11 @@ def schema_template_subpath(label='', property_key='', constraint_type=''):
     """
 
     # noinspection PyPep8Naming
-    CR = ConditionRecord = NamedTuple('ConditionRecord', fields=(
+    CR = ConditionRecord = NamedTuple('ConditionRecord', [
         ('label', bool),
         ('property_key', bool),
         ('constraint_type', bool),
-    ))
+    ])
 
     condition_map = {
         CR(label=False, property_key=False, constraint_type=False): '',
