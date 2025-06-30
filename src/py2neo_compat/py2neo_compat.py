@@ -294,7 +294,7 @@ to_dict = py2neo_entity_to_dict
 
 # Attach `to_dict` to base classes for Node/Relationship
 for cls in py2neo_property_classes:
-    six.create_bound_method(to_dict, cls)
+    cls.to_dict = to_dict
 
 __all__ += ('py2neo_entity_to_dict', 'to_dict')
 
@@ -343,9 +343,16 @@ __all__ += ('create_node',)
 if py2neo_ver == 1:
     def update_properties(entity, properties):
         entity.update_properties(properties)
+
+    def set_properties(entity, properties):
+        entity.set_properties(properties)
+
 elif py2neo_ver == 2:
     def update_properties(entity, properties):
         entity.properties.update(properties)
+
+    def set_properties(entity, properties):
+        entity.properties.replace(properties)
 
 
 __all__ += ('update_properties',)
