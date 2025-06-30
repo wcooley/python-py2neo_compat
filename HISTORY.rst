@@ -2,6 +2,11 @@
 History
 =======
 
+1.0.4 (2025-07-01)
+------------------
+* Don't use `six.create_bound_method` to attach `to_dict` to classes.
+* Add `set_properties` methods.
+
 1.0.3 (2025-05-25)
 ------------------
 
