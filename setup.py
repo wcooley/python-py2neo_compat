@@ -15,7 +15,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 # Enable setting version higher for testing
-PY2NEO_MAX_VERSION = os.environ.get('PY2NEO_MAX_VERSION', '2')
+PY2NEO_MAX_VERSION = os.environ.get('PY2NEO_MAX_VERSION', '2021')
 
 requirements = [
     'boltons',

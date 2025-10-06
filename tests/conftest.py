@@ -10,7 +10,7 @@ import pytest  # noqa
 import logging
 
 import py2neo_compat
-from py2neo_compat import Graph, py2neo_ver, node, create_node
+from py2neo_compat import Graph, py2neo_ver, create_node
 from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -30,6 +30,10 @@ pytest.mark.todo_v3 = pytest.mark.xfail(py2neo_ver==3,
 pytest.mark.todo_v4 = pytest.mark.xfail(py2neo_ver==4,
                                         reason='TODO py2neo v4',
                                         strict=True)
+pytest.mark.todo_v2021 = pytest.mark.xfail(py2neo_ver==2021,
+                                           reason='TODO py2neo v2021',
+                                           strict=True)
+
 
 
 @pytest.fixture(scope='session', autouse=True)
