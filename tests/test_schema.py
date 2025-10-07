@@ -5,70 +5,30 @@
 
 from __future__ import absolute_import, print_function
 
-import itertools
 import pytest  # noqa
-
-from boltons.typeutils import issubclass
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 from py2neo_compat import Graph
 from py2neo_compat.schema import \
-    _create_constraint, \
-    _schema_template, \
+    create_uniqueness_constraint, \
     create_schema, \
     drop_schema, \
     schema_constraints, \
     schema_indexes, \
-    schema_template_subpath, \
     SchemaItem
 
 
-@pytest.mark.integration
-def test__schema_template(neo4j_graph_object):
-    graph = neo4j_graph_object
+def test_schema_indexes(sample_graph):
+    g = sample_graph
+    create_schema(g, schema_map={
+        'indexes': [
+            SchemaItem(label='thingy', property_key='name')
+        ]
+    })
 
-    t = _schema_template(graph, schema_type='constraints', label='LEBAL',
-                         property_key='YEK', constraint_type='uniqueness')
-
-    assert str(t).endswith('/schema/constraint/{label}/uniqueness/{property_key}')
-
-    assert str(t.expand(label='LEBAL', property_key='YEK')).endswith('/schema/constraint/LEBAL/uniqueness/YEK')
-
-
-@pytest.mark.parametrize(
-    ('given', 'expected'), [
-        ({}, ''),
-        ({'label': True}, '{label}/'),
-        ({'label': 'person',
-          'property_key': 'username'},
-                '{label}/{property_key}'),
-
-        ({'label': 'person',
-          'constraint_type': 'uniqueness'},
-                '{label}/uniqueness'),
-
-        ({'label': 'person',
-          'property_key': 'username',
-          'constraint_type': 'uniqueness'},
-                '{label}/uniqueness/{property_key}'),
-
-        ({'property_key': 'foo'}, ValueError),
-
-        ({'constraint_type': 'bar'}, ValueError)
-    ]
-)
-@pytest.mark.unit
-def test_schema_template_subpath(given, expected):
-    """Ensure schema_template_subpath makes the right URIs."""
-
-    if isinstance(expected, Exception) or issubclass(expected, Exception):
-        with pytest.raises(expected):
-            schema_template_subpath(**given)
-    else:
-        assert schema_template_subpath(**given) == expected
+    assert [('thingy', ['name'])] == schema_indexes(g)
 
 
-@pytest.mark.todo_v3
 @pytest.mark.integration
 def test_drop_schema(sample_graph):
     """Test the :func:`drop_schema` works."""
@@ -95,13 +55,13 @@ def test_drop_schema(sample_graph):
 
 
 @pytest.mark.integration
-def test_create_constraint(neo4j_graph):
+def test_create_uniqness_constraint(neo4j_graph):
     g = neo4j_graph
 
     assert len(list(schema_constraints(g))) == 0
     assert len(list(schema_indexes(g))) == 0
 
-    _create_constraint(g, 'uniqueness', 'person', 'username')
+    create_uniqueness_constraint(g, 'person', 'username')
 
     assert len(list(schema_constraints(g))) == 1
     assert len(list(schema_indexes(g))) == 1
