@@ -1,6 +1,21 @@
 History
 =======
 
+2.0.0 (2025-10-08)
+------------------
+
+-   Add support for py2neo v2021.2.4.
+-   Drop support for py2neo v1.6. Source referring to v1 has been retained for
+    reference and are not tested and don't work.
+-   Drop support for Python versions other than 3.6 and 3.8; really only v2 on
+    3.6 and 3.8 and v2021 on 3.8.
+-   Split `py2neo_compat.py2neo_compat` and `py2neo_compat.schema` into
+    separate modules for the different versions supported.
+-   Remove `Graph.cypher` namespace for `execute` and `stream`. Replace with
+    `cypher_execute` and `cypher_stream` the first argument is Graph instead.
+-   Modernize build system, partly. We are still using down-revs of
+    `setuptools` but at least have moved the data into `pyproject.toml`.
+
 1.0.4 (2025-07-01)
 ------------------
 
