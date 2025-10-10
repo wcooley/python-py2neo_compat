@@ -96,10 +96,13 @@ def _order(graph) -> int:
                                  'START n=node(*) RETURN count(n)')))
 Graph.order = property(_order)
 
+def graph_find(self, label=None, property_key=None, property_value=None):
+    properties = {property_key: property_value} if property_key else {}
+    return self.nodes.match(label, **properties)
+Graph.find = graph_find
 
-def graph_find_one(self, label, property_key, property_value):
-    return self.nodes.match(label, **{property_key: property_value}).first()
-
+def graph_find_one(self, label=None, property_key=None, property_value=None):
+    return self.find(label, property_key, property_value).first()
 Graph.find_one = graph_find_one
 
 Graph._orig_create = Graph.create

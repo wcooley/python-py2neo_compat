@@ -229,6 +229,32 @@ def test_graph_create_can_create_relationship(neo4j_graph):
     _assert_alice_knows_bob(alice, bob, knows)
 
 
+def test_graph_can_find(sample_graph_and_nodes):
+    """Test :func:`~py2neo_compat.Graph.find`."""
+    g, node_a, node_b = sample_graph_and_nodes
+    node_b2 = create_node(graph=g, labels=['thingy'],
+                         properties={'name': 'b',
+                                     'py2neo_ver': str(py2neo_ver)+'_xxx'})
+
+    nodes = list(
+        g.find(label='thingy', property_key='name', property_value='b'))
+    assert nodes is not None
+    assert len(nodes) == 2
+
+
+def test_graph_can_find_one(sample_graph_and_nodes):
+    """Test :func:`~py2neo_compat.Graph.find_one`."""
+    g, node_a, node_b = sample_graph_and_nodes
+    node_b2 = create_node(graph=g, labels=['thingy'],
+                         properties={'name': 'b',
+                                     'py2neo_ver': str(py2neo_ver)+'_xxx'})
+
+    node = g.find_one(label='thingy', property_key='name', property_value='b')
+    assert node is not None
+    assert node.labels == {'thingy'}
+    assert node['name'] == 'b'
+
+
 @pytest.mark.unit
 def test_legacy_node_constructor(neo4j_graph):
     g = neo4j_graph
