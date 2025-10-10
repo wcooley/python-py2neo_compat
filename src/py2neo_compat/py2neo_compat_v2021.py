@@ -58,6 +58,12 @@ _Entity._id = property(lambda s: s.identity)
 _Entity.push = lambda s: s.graph.push(s)
 _Entity.pull = lambda s: s.graph.pull(s)
 
+# Monkey-patching Node
+def _node_add_labels(node, *args):
+    for label in args:
+        node.add_label(label)
+Node.add_labels = _node_add_labels
+
 # Monkey-patching Graph
 
 Graph.uri = property(lambda s: s.service.uri.uri)
