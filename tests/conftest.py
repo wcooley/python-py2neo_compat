@@ -110,7 +110,9 @@ def sample_graph_and_nodes(neo4j_graph):
     assert None is not node_a
     assert None is not node_b
 
-    g.create((node_a, 'points_to', node_b))
+    rel = foremost(g.create((node_a, 'points_to', node_b)))
+    rel['sample'] = 'property'
+    rel.push()
 
     assert g.size > 0
     assert g.order > 0
