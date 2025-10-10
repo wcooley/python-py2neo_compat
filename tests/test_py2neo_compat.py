@@ -359,6 +359,64 @@ def test_can_get_graph_from_node(neo4j_graph):
 
 
 @pytest.mark.integration
+def test_graph_can_match_kwargs_two_nodes_rel_type(sample_graph_and_nodes):
+    g, node_a, node_b = sample_graph_and_nodes
+
+    results = list(
+        g.match(start_node=node_a, rel_type='points_to', end_node=node_b))
+    assert results
+    result0 = results[0]
+    assert result0['sample'] == 'property'
+    assert result0.start_node == node_a
+    assert result0.end_node == node_b
+
+
+@pytest.mark.integration
+def test_graph_can_match_kwargs_end_node_rel_type(sample_graph_and_nodes):
+    g, node_a, node_b = sample_graph_and_nodes
+
+    results = list(g.match(rel_type='points_to', end_node=node_b))
+    assert results
+    result0 = results[0]
+    assert result0['sample'] == 'property'
+    assert result0.start_node == node_a
+    assert result0.end_node == node_b
+
+
+@pytest.mark.integration
+def test_graph_can_match_3_args(sample_graph_and_nodes):
+    g, node_a, node_b = sample_graph_and_nodes
+
+    results = list(g.match(node_a, 'points_to', node_b))
+    assert results
+    result0 = results[0]
+    assert result0['sample'] == 'property'
+    assert result0.start_node == node_a
+    assert result0.end_node == node_b
+
+
+@pytest.mark.integration
+def test_graph_can_match_kwargs_nodes_only(sample_graph_and_nodes):
+    g, node_a, node_b = sample_graph_and_nodes
+
+    results = list(g.match(start_node=node_a, end_node=node_b))
+    assert results
+    result0 = results[0]
+    assert result0['sample'] == 'property'
+    assert result0.reltype == 'points_to'
+    assert result0.start_node == node_a
+    assert result0.end_node == node_b
+
+
+@pytest.mark.integration
+def test_graph_can_match_one(sample_graph_and_nodes):
+    g, node_a, node_b = sample_graph_and_nodes
+
+    result = g.match_one(start_node=node_a, rel_type='points_to')
+    assert result.end_node == node_b
+
+
+@pytest.mark.integration
 def test_update_properties(sample_graph_and_nodes):
     """Ensure :func:`py2neo_compat.update_properties` works."""
     g, node_a, _ = sample_graph_and_nodes

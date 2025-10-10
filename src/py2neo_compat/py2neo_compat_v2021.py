@@ -1,6 +1,8 @@
 """
 Compatibility layer for py2neo v2021
 """
+from typing import Optional
+
 from .util import foremost, SimpleNamespace
 
 import py2neo
@@ -117,6 +119,30 @@ def graph_create(self, subgraph):
     return (subgraph,)
 
 Graph.create = graph_create
+
+Graph._orig_match = Graph.match
+def graph_match(
+    graph: Graph,
+    start_node: Optional[Node] = None,
+    rel_type: Optional[str] = None,
+    end_node: Optional[Node] = None,
+    limit: Optional[int] = None
+):
+    """Match relationships between two nodes."""
+    return graph._orig_match((start_node, end_node), r_type=rel_type, limit=limit)
+Graph.match = graph_match
+
+
+Graph._orig_match_one = Graph.match_one
+def graph_match_one(
+    graph: Graph,
+    start_node: Optional[Node] = None,
+    rel_type: Optional[str] = None,
+    end_node: Optional[Node] = None
+):
+    """Match one relationship between two nodes."""
+    return foremost(graph.match(start_node=start_node, rel_type=rel_type, end_node=end_node))
+Graph.match_one = graph_match_one
 
 
 # Stand-alone functions
