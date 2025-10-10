@@ -57,6 +57,7 @@ py2neo.Record = Record
 _Entity._id = property(lambda s: s.identity)
 _Entity.push = lambda s: s.graph.push(s)
 _Entity.pull = lambda s: s.graph.pull(s)
+_Entity.exists = lambda s: s.identity is not None
 
 # Monkey-patching Node
 def _node_add_labels(node, *args):

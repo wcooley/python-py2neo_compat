@@ -145,6 +145,16 @@ def test_graph_node_labels(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
+def test_node_exists(sample_graph_and_nodes):
+    """Test :meth:`Node.exists`."""
+    g, node_a, node_b = sample_graph_and_nodes
+    assert node_a.exists
+
+    # This doesn't work
+    # assert not Node().exists
+
+
+@pytest.mark.integration
 @pytest.mark.parametrize(('labels', 'properties'), [
     (('restauranteur',), {'name': 'Alice'}),        # Label, property
     ((), {}),                                       # Empty iterable, empty map
