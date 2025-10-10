@@ -8,6 +8,7 @@ from py2neo import Graph
 from py2neo import Node
 from py2neo import Relationship
 from py2neo.core import ServerError as DatabaseError
+from py2neo.core import BindError
 py2neo.DatabaseError = DatabaseError
 
 
@@ -52,3 +53,11 @@ def update_properties(entity, properties):
 
 def set_properties(entity, properties):
     entity.properties.replace(properties)
+
+def delete_rel(rel):
+    try:
+        graph = rel.graph
+    except (AttributeError, BindError):
+        return
+
+    graph.delete(rel)

@@ -22,6 +22,7 @@ from py2neo_compat import (
     create_unique_rel,
     cypher_execute,
     cypher_stream,
+    delete_rel,
     graph_metadata,
     node,
     py2neo_ver,
@@ -374,5 +375,26 @@ def test_create_unique_rel_dup_rel(sample_graph):
     assert points_to3 == points_to1 == points_to2
 
 
+@pytest.mark.integration
+def test_can_delete_bound_rel(sample_graph_and_nodes):
+    g, node_a, node_b = sample_graph_and_nodes
+
+    rel = g.match_one(start_node=node_a, rel_type='points_to', end_node=node_b)
+    assert isinstance(rel, Relationship)
+
+    delete_rel(rel)
+    assert g.match_one(start_node=node_a, rel_type='points_to',
+                       end_node=node_b) is None
 
 
+@pytest.mark.integration
+def test_can_delete_unbound_rel():
+
+    n1 = Node('thing1')
+    n2 = Node('thing2')
+
+    rel = Relationship(n1, 'node_of', n2)
+    delete_rel(rel)
+
+    assert n1 is not None
+    assert n2 is not None

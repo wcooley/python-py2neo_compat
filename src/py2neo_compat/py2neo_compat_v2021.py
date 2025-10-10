@@ -106,6 +106,7 @@ Graph.create = graph_create
 
 # Stand-alone functions
 
+
 def create_node(
     graph=None,  # type: Optional[py2neo.Graph]
     labels=None,  # type: Optional[Iterable[str]]
@@ -130,3 +131,9 @@ def update_properties(entity, properties):
 def set_properties(entity, properties):
     entity.clear()
     entity.update(properties)
+
+def delete_rel(rel):
+    if rel.graph is None:
+        return
+
+    rel.graph.separate(rel)
