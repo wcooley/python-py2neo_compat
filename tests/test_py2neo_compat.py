@@ -287,12 +287,27 @@ def test_graph_create_can_create_node(neo4j_graph):
 
 
 @pytest.mark.integration
-def test_graph_create_can_create_relationship_tuple(sample_graph_and_nodes):
+def test_graph_create_can_create_rel_3tuple(sample_graph_and_nodes):
     """`Graph.create` can create relationship from tuple (Node, reltype, Node)"""
     g, node_a, node_b = sample_graph_and_nodes
     orig_size, orig_order = (g.size, g.order)
 
     hungry_for = foremost(g.create((node_a, 'hungry_for', node_b)))
+
+    assert hungry_for.reltype == 'hungry_for'
+    assert hungry_for.start_node == node_a
+    assert hungry_for.end_node == node_b
+
+    assert (g.order, g.size) == (orig_order, orig_size+1)
+
+
+@pytest.mark.integration
+def test_graph_create_can_create_rel_4tuple_with_properties(sample_graph_and_nodes):
+    """`Graph.create` can create relationship from tuple (Node, reltype, Node)"""
+    g, node_a, node_b = sample_graph_and_nodes
+    orig_size, orig_order = (g.size, g.order)
+
+    hungry_for = foremost(g.create((node_a, 'hungry_for', node_b, {'eats': 'food'})))
 
     assert hungry_for.reltype == 'hungry_for'
     assert hungry_for.start_node == node_a

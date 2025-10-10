@@ -105,8 +105,11 @@ Graph.find_one = graph_find_one
 Graph._orig_create = Graph.create
 
 def graph_create(self, subgraph):
+    properties = {}
     if issubclass(type(subgraph), tuple):
-        subgraph = Relationship(*subgraph)
+        if type(subgraph[-1]) is dict:
+            subgraph, properties = subgraph[:-1], subgraph[-1]
+        subgraph = Relationship(*subgraph, **properties)
     self._orig_create(subgraph)
     return (subgraph,)
 
