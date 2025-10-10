@@ -138,6 +138,13 @@ def test_node_add_labels(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
+def test_graph_node_labels(sample_graph_and_nodes):
+    """Test :meth:`Graph.node_lables`."""
+    g, *_ = sample_graph_and_nodes
+    assert g.node_labels == {'thingy'}
+
+
+@pytest.mark.integration
 @pytest.mark.parametrize(('labels', 'properties'), [
     (('restauranteur',), {'name': 'Alice'}),        # Label, property
     ((), {}),                                       # Empty iterable, empty map

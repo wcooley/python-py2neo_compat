@@ -68,6 +68,7 @@ Node.add_labels = _node_add_labels
 
 Graph.uri = property(lambda s: s.service.uri.uri)
 Graph.neo4j_version = property(lambda s: s.service.kernel_version)
+Graph.node_labels = property(lambda s: s.schema.node_labels)
 
 
 def _size(graph) -> int:
