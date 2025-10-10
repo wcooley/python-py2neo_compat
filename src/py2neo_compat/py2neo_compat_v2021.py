@@ -65,6 +65,10 @@ def _node_add_labels(node, *args):
         node.add_label(label)
 Node.add_labels = _node_add_labels
 
+def _node_match_outgoing(self, rel_type=None, end_node=None, limit=None):
+    return self.graph.match(start_node=self, rel_type=rel_type, end_node=end_node, limit=limit)
+Node.match_outgoing = _node_match_outgoing
+
 # Monkey-patching Graph
 
 def _graph_service_uri(self):

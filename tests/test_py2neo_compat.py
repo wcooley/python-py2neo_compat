@@ -164,6 +164,19 @@ def test_node_exists(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
+def test_node_match_outgoing(sample_graph_and_nodes):
+    """Test :meth:`Node.match_outgoing`."""
+    g, node_a, node_b = sample_graph_and_nodes
+
+    results = list(node_a.match_outgoing(rel_type='points_to'))
+    assert len(results) == 1
+    results0 = results[0]
+    assert results0.reltype == 'points_to'
+    assert results0.end_node == node_b
+    assert results0.start_node == node_a
+
+
+@pytest.mark.integration
 @pytest.mark.parametrize(('labels', 'properties'), [
     (('restauranteur',), {'name': 'Alice'}),        # Label, property
     ((), {}),                                       # Empty iterable, empty map
