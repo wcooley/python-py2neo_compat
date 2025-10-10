@@ -146,6 +146,14 @@ def test_graph_node_labels(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
+def test_graph_has_uri(neo4j_graph_object):
+    """Test :meth:`Graph.uri`."""
+
+    assert str(neo4j_graph_object.uri) != ""
+    assert str(neo4j_graph_object.uri).endswith("/db/data/")
+
+
+@pytest.mark.integration
 def test_node_exists(sample_graph_and_nodes):
     """Test :meth:`Node.exists`."""
     g, node_a, node_b = sample_graph_and_nodes
