@@ -11,7 +11,16 @@ from six.moves.urllib.parse import urljoin
 
 try:
     # noinspection PyCompatibility,PyUnresolvedReferences
-    from typing import NamedTuple, Iterator, Iterable, Tuple, List, Union
+    from typing import (
+        Dict,
+        NamedTuple,
+        Iterator,
+        Iterable,
+        Optional,
+        Tuple,
+        List,
+        Union,
+    )
     OptionalStrBool = Union[str, bool, None]
 except ImportError:  # pragma: no cover
     "Module 'typing' is optional for 2.7-compatible types in comments"
@@ -20,7 +29,7 @@ except ImportError:  # pragma: no cover
 from py2neo.packages.httpstream import Resource
 from py2neo.packages.httpstream.http import URITemplate
 
-from .py2neo_compat import Graph, graph_metadata
+from .py2neo_compat import Graph
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
@@ -157,4 +166,22 @@ def _create_constraint(graph, constraint_type, label, property_key):
     resource.post({"property_keys": [property_key]})
 
 
+def graph_metadata(graph, key=None):
+    # type: (Graph, Optional[str]) -> Union[Dict, str]
+    """Get graph metadata or a key in the metadata."""
 
+    # v1.6 has Graph.__metadata__
+    metadata = getattr(graph, '__metadata__', None)
+    if metadata is not None:
+        metadata = dict(metadata)
+    elif hasattr(graph, 'resource'):
+        # v2.0 has Graph.resource.metadata
+        # noinspection PyUnresolvedReferences
+        metadata = graph.resource.metadata
+    elif hasattr(graph, '__remote__'):
+        metadata = graph.__remote__.metadata
+
+    if key is not None:
+        return metadata[key]
+    else:
+        return metadata

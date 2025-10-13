@@ -23,7 +23,6 @@ from py2neo_compat import (
     cypher_execute,
     cypher_stream,
     delete_rel,
-    graph_metadata,
     node,
     py2neo_ver,
     rel,
@@ -99,16 +98,6 @@ def test_monkey_patch_classes(klass, attr):
     assert attr_in_py2neo.__doc__ is attr_in_py2neo_compat.__doc__
 
 
-@pytest.mark.todo_v2021
-@pytest.mark.integration
-def test_graph_metadata(neo4j_graph_object):
-    """Test :func:`graph_metadata`."""
-    assert len(graph_metadata(neo4j_graph_object)) > 0
-    assert graph_metadata(neo4j_graph_object, 'indexes')\
-        .endswith('/schema/index')
-
-
-@pytest.mark.todo_v3
 @pytest.mark.integration
 def test_graph_delete_all(sample_graph):
     # type: (py2neo.Graph) -> None

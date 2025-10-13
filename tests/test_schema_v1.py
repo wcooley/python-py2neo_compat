@@ -9,7 +9,7 @@ pytest.importorskip('py2neo_compat.schema_v1',
 from py2neo_compat.schema_v1 import (
     _create_constraint,
     _schema_template,
-    schema_constraints,
+    graph_metadata, schema_constraints,
     schema_indexes, schema_template_subpath,
 )
 
@@ -70,3 +70,11 @@ def test_create_constraint(neo4j_graph):
 
     assert len(list(schema_constraints(g))) == 1
     assert len(list(schema_indexes(g))) == 1
+
+
+@pytest.mark.integration
+def test_graph_metadata(neo4j_graph_object):
+    """Test :func:`graph_metadata`."""
+    assert len(graph_metadata(neo4j_graph_object)) > 0
+    assert graph_metadata(neo4j_graph_object, 'indexes')\
+        .endswith('/schema/index')

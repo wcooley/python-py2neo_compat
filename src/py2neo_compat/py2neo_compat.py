@@ -52,27 +52,6 @@ def monkey_patch_py2neo():
     pass
 
 
-def graph_metadata(graph, key=None):
-    # type: (Graph, Optional[str]) -> Union[Dict, str]
-    """Get graph metadata or a key in the metadata."""
-
-    # v1.6 has Graph.__metadata__
-    metadata = getattr(graph, '__metadata__', None)
-    if metadata is not None:
-        metadata = dict(metadata)
-    elif hasattr(graph, 'resource'):
-        # v2.0 has Graph.resource.metadata
-        # noinspection PyUnresolvedReferences
-        metadata = graph.resource.metadata
-    elif hasattr(graph, '__remote__'):
-        metadata = graph.__remote__.metadata
-
-    if key is not None:
-        return metadata[key]
-    else:
-        return metadata
-
-
 def py2neo_entity_to_dict(entity):
     # type: (Union[Node,Relationship,PropertySet]) -> Dict[str, Any]
     """Convert an "entity" to a `dict`.
