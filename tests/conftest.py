@@ -16,25 +16,6 @@ from py2neo_compat.util import foremost
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
 
-pytest.mark.todo = pytest.mark.xfail(reason='TODO', strict=True)
-
-pytest.mark.todo_v1 = pytest.mark.xfail(py2neo_ver==1,
-                                        reason='TODO py2neo v1',
-                                        strict=True)
-pytest.mark.todo_v2 = pytest.mark.xfail(py2neo_ver==2,
-                                        reason='TODO py2neo v2',
-                                        strict=True)
-pytest.mark.todo_v3 = pytest.mark.xfail(py2neo_ver==3,
-                                        reason='TODO py2neo v3',
-                                        strict=True)
-pytest.mark.todo_v4 = pytest.mark.xfail(py2neo_ver==4,
-                                        reason='TODO py2neo v4',
-                                        strict=True)
-pytest.mark.todo_v2021 = pytest.mark.xfail(py2neo_ver==2021,
-                                           reason='TODO py2neo v2021',
-                                           strict=True)
-
-
 
 @pytest.fixture(scope='session', autouse=True)
 def logging_config():
