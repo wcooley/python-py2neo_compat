@@ -1,7 +1,7 @@
 """
 Compatibility layer for py2neo v2021
 """
-from typing import Optional
+from typing import Any, Iterable, Mapping, Optional
 
 from .util import foremost
 
@@ -13,7 +13,8 @@ from py2neo import DatabaseError as DatabaseError
 from py2neo import Entity as _Entity
 
 # Monkey-patch py2neo
-def _cast_node(*args, **kwargs):
+
+def _cast_node(*args: list[str], **kwargs: Optional[Mapping[str, Any]]) -> Node:
     """Minimally reproduce staticmethod Node.cast
 
     Reimplement only what we are actually using, for now.
@@ -56,15 +57,18 @@ _Entity.push = lambda s: s.graph.push(s)
 _Entity.pull = lambda s: s.graph.pull(s)
 _Entity.exists = lambda s: s.identity is not None
 
+
 # Monkey-patching Node
 def _node_add_labels(node, *args):
     for label in args:
         node.add_label(label)
 Node.add_labels = _node_add_labels
 
+
 def _node_match_outgoing(self, rel_type=None, end_node=None, limit=None):
     return self.graph.match(start_node=self, rel_type=rel_type, end_node=end_node, limit=limit)
 Node.match_outgoing = _node_match_outgoing
+
 
 # Monkey-patching Graph
 
@@ -74,11 +78,13 @@ def _graph_service_uri(self):
         uri += "/db/data/"
     return uri
 Graph.uri = property(_graph_service_uri)
+
+
 Graph.neo4j_version = property(lambda s: s.service.kernel_version)
 Graph.node_labels = property(lambda s: s.schema.node_labels)
 
 
-def _size(graph) -> int:
+def _size(graph: Graph) -> int:
     """Number of relationships in graph"""
     return foremost(foremost(r.values() for r in
                              cypher_execute(graph,
@@ -86,25 +92,29 @@ def _size(graph) -> int:
 Graph.size = property(_size)
 
 
-def _order(graph) -> int:
+def _order(graph: Graph) -> int:
     """Number of nodes in graph"""
     return foremost(foremost(r.values() for r in
                              cypher_execute(graph,
                                  'START n=node(*) RETURN count(n)')))
 Graph.order = property(_order)
 
-def graph_find(self, label=None, property_key=None, property_value=None):
+
+def graph_find(self, label: object = None, property_key: object = None,
+               property_value: object = None):
     properties = {property_key: property_value} if property_key else {}
     return self.nodes.match(label, **properties)
 Graph.find = graph_find
 
-def graph_find_one(self, label=None, property_key=None, property_value=None):
+
+def graph_find_one(self, label: str = None, property_key: str = None,
+                   property_value: str = None):
     return self.find(label, property_key, property_value).first()
 Graph.find_one = graph_find_one
 
-Graph._orig_create = Graph.create
 
-def graph_create(self, subgraph):
+Graph._orig_create = Graph.create
+def graph_create(self, subgraph: tuple(Node, Relationship, Node) | Relationship):
     properties = {}
     if issubclass(type(subgraph), tuple):
         if type(subgraph[-1]) is dict:
@@ -112,8 +122,8 @@ def graph_create(self, subgraph):
         subgraph = Relationship(*subgraph, **properties)
     self._orig_create(subgraph)
     return (subgraph,)
-
 Graph.create = graph_create
+
 
 Graph._orig_match = Graph.match
 def graph_match(
@@ -144,9 +154,9 @@ Graph.match_one = graph_match_one
 
 
 def create_node(
-    graph=None,  # type: Optional[py2neo.Graph]
-    labels=None,  # type: Optional[Iterable[str]]
-    properties=None,  # type: Optional[Mapping[str, Any]]
+    graph: Optional[py2neo.Graph] = None,
+    labels: Optional[Iterable[str]] = None,
+    properties: Optional[Mapping[str, Any]] = None,
 ) -> Node:
     properties = properties or {}
     labels = labels or []
@@ -155,20 +165,24 @@ def create_node(
         graph.create(node)
     return node
 
-def cypher_stream(graph, query, **ps):
+def cypher_stream(graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]) -> Iterable:
     return graph.run(query, **ps)
 
-def cypher_execute(graph, query, **ps):
+
+def cypher_execute(graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]) -> Iterable:
     return list(graph.run(query, **ps))
 
-def update_properties(entity, properties):
+
+def update_properties(entity: _Entity, properties: Mapping[str, Any]):
     entity.update(properties)
 
-def set_properties(entity, properties):
+
+def set_properties(entity: _Entity, properties: Mapping[str, Any]):
     entity.clear()
     entity.update(properties)
 
-def delete_rel(rel):
+
+def delete_rel(rel: Relationship):
     if rel.graph is None:
         return
 
