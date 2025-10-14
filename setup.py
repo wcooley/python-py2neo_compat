@@ -15,7 +15,7 @@ if __name__ == '__main__':
     setup(
         name=pyproject['project']['name'],
         version='1.0.0',
-        license=pyproject['project']['license'],
+        license=pyproject['project']['license']['text'],
         description=pyproject['project']['description'],
         packages=find_packages(where='src/', include=['*']),
         package_dir={'': 'src'},

@@ -8,10 +8,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "py2neo_compat"
-#authors = [{name = "Wil Cooley", email = "wcooley@nakedape.cc"}]
-authors = ["Wil Cooley <wcooley@nakedape.cc>"]
-#license = {text = "Apache Software License 2.0"}
-license = "Apache Software License 2.0"
+authors = [{name = "Wil Cooley", email = "wcooley@nakedape.cc"}]
+license = {text = "Apache Software License 2.0"}
 description = "Compatibility layer for py2neo"
 dynamic = ["version"]
 keywords = ["py2neo_compat", "py2neo", "compat", "neo4j"]
