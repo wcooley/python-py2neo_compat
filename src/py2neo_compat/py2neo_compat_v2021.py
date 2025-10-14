@@ -1,7 +1,7 @@
 """
 Compatibility layer for py2neo v2021
 """
-from typing import Any, Iterable, Mapping, Optional
+from typing import Any, Iterable, List, Mapping, Optional, Tuple, Union
 
 from .util import foremost
 
@@ -14,7 +14,7 @@ from py2neo import Entity as _Entity
 
 # Monkey-patch py2neo
 
-def _cast_node(*args: list[str], **kwargs: Optional[Mapping[str, Any]]) -> Node:
+def _cast_node(*args: Optional[List[str]], **kwargs: Optional[Mapping[str, Any]]) -> Node:
     """Minimally reproduce staticmethod Node.cast
 
     Reimplement only what we are actually using, for now.
@@ -114,7 +114,10 @@ Graph.find_one = graph_find_one
 
 
 Graph._orig_create = Graph.create
-def graph_create(self, subgraph: tuple(Node, Relationship, Node) | Relationship):
+
+
+def graph_create(self, subgraph: Union[
+        Tuple[Node, Relationship, Node], Relationship]):
     properties = {}
     if issubclass(type(subgraph), tuple):
         if type(subgraph[-1]) is dict:
