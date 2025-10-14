@@ -6,9 +6,6 @@
 from __future__ import absolute_import, print_function
 
 import inspect
-import operator
-import os
-import sys
 
 import pytest
 import py2neo

@@ -3,13 +3,13 @@ Compatibility layer for py2neo v2021
 """
 from typing import Optional
 
-from .util import foremost, SimpleNamespace
+from .util import foremost
 
 import py2neo
-from py2neo import Graph
-from py2neo import Node
-from py2neo import Relationship
-from py2neo import DatabaseError
+from py2neo import Graph as Graph
+from py2neo import Node as Node
+from py2neo import Relationship as Relationship
+from py2neo import DatabaseError as DatabaseError
 from py2neo import Entity as _Entity
 
 # Monkey-patch py2neo
@@ -37,16 +37,11 @@ def _cast_node(*args, **kwargs):
 node = _cast_node
 py2neo.node = _cast_node
 
-# def _cast_rel(*args, **kwargs):
-#     # Case 1: (Node, reltype, Node)
-#     if len(args) in 3:
-
 
 rel = Relationship
 py2neo.rel = rel
 
 Relationship.reltype = property(lambda s: foremost(s.types()))
-
 
 from py2neo.data import PropertyDict
 py2neo_property_classes = (Node, Relationship, PropertyDict)
