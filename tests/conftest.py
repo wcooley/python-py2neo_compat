@@ -10,26 +10,11 @@ import pytest  # noqa
 import logging
 
 import py2neo_compat
-from py2neo_compat import Graph, py2neo_ver, node, create_node
+from py2neo_compat import Graph, py2neo_ver, create_node
 from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
-
-pytest.mark.todo = pytest.mark.xfail(reason='TODO', strict=True)
-
-pytest.mark.todo_v1 = pytest.mark.xfail(py2neo_ver==1,
-                                        reason='TODO py2neo v1',
-                                        strict=True)
-pytest.mark.todo_v2 = pytest.mark.xfail(py2neo_ver==2,
-                                        reason='TODO py2neo v2',
-                                        strict=True)
-pytest.mark.todo_v3 = pytest.mark.xfail(py2neo_ver==3,
-                                        reason='TODO py2neo v3',
-                                        strict=True)
-pytest.mark.todo_v4 = pytest.mark.xfail(py2neo_ver==4,
-                                        reason='TODO py2neo v4',
-                                        strict=True)
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -106,7 +91,9 @@ def sample_graph_and_nodes(neo4j_graph):
     assert None is not node_a
     assert None is not node_b
 
-    g.create((node_a, 'points_to', node_b))
+    rel = foremost(g.create((node_a, 'points_to', node_b)))
+    rel['sample'] = 'property'
+    rel.push()
 
     assert g.size > 0
     assert g.order > 0

@@ -1,0 +1,56 @@
+[build-system]
+requires = [
+    "setuptools==59.6.0",
+    "setuptools_scm==6.4.2",
+    "tomli",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py2neo_compat"
+authors = [{name = "Wil Cooley", email = "wcooley@nakedape.cc"}]
+license = {text = "Apache Software License 2.0"}
+description = "Compatibility layer for py2neo"
+dynamic = ["version"]
+keywords = ["py2neo_compat", "py2neo", "compat", "neo4j"]
+requires-python = ">= 3.6"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+]
+urls = {Homepage = "https://github.com/wcooley/python-py2neo_compat"}
+dependencies = [
+    "boltons",
+    "py2neo",
+    "six",
+]
+
+[project.optional-dependencies]
+test = [
+    "coverage",
+    "pytest >= 3.3.0",
+    "pytest-cov",
+    "pytest-forked",
+]
+py2neo2 = [
+    "py2neo~=2.0.9"
+]
+py2neo2021 = [
+    "py2neo~=2021.2.4"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["py2neo_compat"]
+namespaces = false
+
+[tool.setuptools_scm]

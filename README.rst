@@ -35,7 +35,7 @@ class, facilities for working with nodes & relationships -- not to mention
 more complicated features like interacting with schema.
 
 What is implemented here is a hodgepodge of monkey-patches and other hacks
-to make things work between v1.6 and v2.
+to make things work between v2 and v2021.
 
 
 Background
