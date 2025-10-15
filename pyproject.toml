@@ -22,7 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
 ]
-urls = {Homepage = "https://github.com/wcooley/py2neo_compat"}
+urls = {Homepage = "https://github.com/wcooley/python-py2neo_compat"}
 dependencies = [
     "boltons",
     "py2neo",
