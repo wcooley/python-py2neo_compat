@@ -52,7 +52,7 @@ def monkey_patch_py2neo():
     pass
 
 
-def py2neo_entity_to_dict(entity: Union[Node,Relationship,...]) -> Dict[str, Any]:
+def py2neo_entity_to_dict(self: Union[Node,Relationship,...]) -> Dict[str, Any]:
     """Convert an "entity" to a `dict`.
 
     All three major versions are incompatible with how to get a dict
@@ -65,16 +65,16 @@ def py2neo_entity_to_dict(entity: Union[Node,Relationship,...]) -> Dict[str, Any
     Catching :class:`AttributeError` also allows this to work a PropertySet,
     which is the output of `get_properties()` on 2.
     """
-    assert isinstance(entity, py2neo_property_classes)
+    assert isinstance(self, py2neo_property_classes)
 
     try:
         # noinspection PyUnresolvedReferences
-        entity = entity.get_properties()
+        self = self.get_properties()
     except AttributeError:
         pass
     finally:
-        entity = dict(entity)
-    return entity
+        self = dict(self)
+    return self
 
 to_dict = py2neo_entity_to_dict
 
