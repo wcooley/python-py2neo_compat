@@ -52,8 +52,7 @@ def monkey_patch_py2neo():
     pass
 
 
-def py2neo_entity_to_dict(entity):
-    # type: (Union[Node,Relationship,PropertySet]) -> Dict[str, Any]
+def py2neo_entity_to_dict(entity: Union[Node,Relationship,...]) -> Dict[str, Any]:
     """Convert an "entity" to a `dict`.
 
     All three major versions are incompatible with how to get a dict
