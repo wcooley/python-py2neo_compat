@@ -47,6 +47,8 @@ Relationship.reltype = property(lambda s: foremost(s.types()))
 from py2neo.data import PropertyDict
 py2neo_property_classes = (Node, Relationship, PropertyDict)
 
+PropertyDict.to_dict = lambda s: dict(s)
+
 from py2neo.cypher import Record
 py2neo.Record = Record
 
