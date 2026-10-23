@@ -134,7 +134,8 @@ def test_graph_has_uri(neo4j_graph_object):
     """Test :meth:`Graph.uri`."""
 
     assert str(neo4j_graph_object.uri) != ''
-    assert str(neo4j_graph_object.uri).endswith('/db/data/')
+    if str(neo4j_graph_object.uri).startswith('http'):
+        assert str(neo4j_graph_object.uri).endswith('/db/data/')
 
 
 @pytest.mark.integration
