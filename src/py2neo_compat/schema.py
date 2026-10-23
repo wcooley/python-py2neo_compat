@@ -100,6 +100,7 @@ dup_schema_exception_messages = [
     'There already exists an index for label',
     'Conflict',
     'Constraint already exists',
+    'There already exists an index'
 ]
 
 
