@@ -7,11 +7,11 @@ from __future__ import absolute_import, print_function
 
 import inspect
 
-import pytest
 import py2neo
+import pytest
 import six
 
-from py2neo_compat.util import foremost
+import py2neo_compat
 from py2neo_compat import (
     Node,
     Relationship,
@@ -25,7 +25,7 @@ from py2neo_compat import (
     rel,
     to_dict,
 )
-import py2neo_compat
+from py2neo_compat.util import foremost
 
 
 def test_imported_symbols():

@@ -2,20 +2,17 @@
 Compatibility layer for py2neo v1
 """
 
-from .util import foremost
-
 import py2neo
 from py2neo.neo4j import GraphDatabaseService as Graph
-from py2neo.neo4j import Node
-from py2neo.neo4j import Relationship
+from py2neo.neo4j import Node, Relationship
 from py2neo.neo4j import ServerError as DatabaseError
+
+from .util import foremost
 
 py2neo.DatabaseError = DatabaseError
 
+from py2neo import node, rel
 from py2neo.neo4j import CypherQuery as _CypherQuery
-
-from py2neo import node
-from py2neo import rel
 
 py2neo_property_classes = (Node, Relationship)
 

@@ -11,13 +11,13 @@ try:
     from typing import (
         Any,
         Dict,
+        Iterable,  # noqa
         List,
         Mapping,
         NamedTuple,
         Optional,
-        Union,
         Tuple,
-        Iterable,  # noqa
+        Union,
     )
 except ImportError:  # pragma: no cover
     """Module :mod:`typing` not required for Py27-compatible type comments."""

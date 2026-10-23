@@ -5,12 +5,11 @@
 
 from __future__ import absolute_import, print_function
 
+import importlib
 import logging
 
-import importlib
-
 try:  # pragma: no cover
-    from typing import Iterable, TypeVar, Callable, Union, Optional
+    from typing import Callable, Iterable, Optional, TypeVar, Union
 
     C = TypeVar('C')  # Constructor/Class
     D = TypeVar('D')  # Default
@@ -20,7 +19,6 @@ except:
     """Module *typing* is optional for Python 2.7 type annotations."""
 
 from boltons.iterutils import first
-
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())

@@ -2,7 +2,6 @@ from __future__ import absolute_import, print_function
 
 import logging
 from functools import partial
-
 from typing import NamedTuple
 
 from . import Graph, py2neo_compat, py2neo_ver
@@ -12,13 +11,15 @@ log.addHandler(logging.NullHandler())
 
 
 if py2neo_ver == 2021:
-    from .schema_v2021 import drop_constraint
     from py2neo_compat.schema_v2021 import *
+
+    from .schema_v2021 import drop_constraint
 elif py2neo_ver == 2:
     from py2neo_compat.schema_v2 import *
 elif py2neo_ver == 1:
-    from .schema_v1 import drop_constraint, _create_constraint
     from py2neo_compat.schema_v1 import *
+
+    from .schema_v1 import _create_constraint, drop_constraint
 
 SchemaItem = NamedTuple(
     'SchemaItem',

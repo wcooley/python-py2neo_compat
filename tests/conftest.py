@@ -5,12 +5,13 @@
 
 from __future__ import absolute_import, print_function
 
-import os
-import pytest  # noqa
 import logging
+import os
+
+import pytest  # noqa
 
 import py2neo_compat
-from py2neo_compat import Graph, py2neo_ver, create_node
+from py2neo_compat import Graph, create_node, py2neo_ver
 from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name

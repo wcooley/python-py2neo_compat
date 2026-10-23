@@ -2,22 +2,17 @@
 Compatibility layer for py2neo v2
 """
 
-from .util import foremost, SimpleNamespace
-
 import py2neo
-from py2neo import Graph
-from py2neo import Node
-from py2neo import Relationship
-from py2neo.core import ServerError as DatabaseError
+from py2neo import Graph, Node, Relationship
 from py2neo.core import BindError
+from py2neo.core import ServerError as DatabaseError
+
+from .util import SimpleNamespace, foremost
 
 py2neo.DatabaseError = DatabaseError
 
 
-from py2neo import node
-from py2neo import rel
-
-from py2neo import PropertySet, PropertyContainer
+from py2neo import PropertyContainer, PropertySet, node, rel
 
 py2neo_property_classes = (Node, Relationship, PropertySet, PropertyContainer)
 

@@ -13,12 +13,12 @@ try:
     # noinspection PyCompatibility,PyUnresolvedReferences
     from typing import (
         Dict,
-        NamedTuple,
-        Iterator,
         Iterable,
+        Iterator,
+        List,
+        NamedTuple,
         Optional,
         Tuple,
-        List,
         Union,
     )
 

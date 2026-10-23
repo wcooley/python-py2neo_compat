@@ -10,12 +10,12 @@ import pytest  # noqa
 # noinspection PyUnresolvedReferences,PyProtectedMember
 from py2neo_compat import Graph
 from py2neo_compat.schema import (
-    create_uniqueness_constraint,
+    SchemaItem,
     create_schema,
+    create_uniqueness_constraint,
     drop_schema,
     schema_constraints,
     schema_indexes,
-    SchemaItem,
 )
 
 
