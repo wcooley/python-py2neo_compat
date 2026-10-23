@@ -23,14 +23,12 @@ SchemaItem = NamedTuple(
 )
 
 
-def create_uniqueness_constraint(graph, label, property_key):
+def create_uniqueness_constraint(graph: Graph, label: str, property_key: str) -> None:
     """Create uniqueness constraint."""
-    # type: (Graph, str, str) -> None
     graph.schema.create_uniqueness_constraint(label, property_key)
 
 
-def create_schema(graph, schema_map, ignoredups=True):
-    # type: (Graph) -> None
+def create_schema(graph: Graph, schema_map: dict[str, tuple[str, str]], ignoredups=True) -> None:
     """Create constraints and indexes.
 
     :param Graph graph: Instance of :class:`py2neo.Graph`.

@@ -17,7 +17,7 @@ from .util import foremost
 
 
 def _cast_node(
-    *args: Optional[List[str]], **kwargs: Optional[Mapping[str, Any]]
+    *args: list[str] | None, **kwargs: Mapping[str, Any] | None
 ) -> Node:
     """Minimally reproduce staticmethod Node.cast
 
@@ -77,7 +77,12 @@ def _node_add_labels(node, *args):
 Node.add_labels = _node_add_labels
 
 
-def _node_match_outgoing(self, rel_type=None, end_node=None, limit=None):
+def _node_match_outgoing(
+    self: Graph,
+    rel_type: Node | None = None,
+    end_node: Node | None = None,
+    limit: int | None = None,
+):
     return self.graph.match(
         start_node=self, rel_type=rel_type, end_node=end_node, limit=limit
     )
@@ -89,7 +94,7 @@ Node.match_outgoing = _node_match_outgoing
 # Monkey-patching Graph
 
 
-def _graph_service_uri(self):
+def _graph_service_uri(self: Graph) -> str:
     uri = self.service.uri
     if uri.startswith('http') and not uri.endswith('/db/data/'):
         uri += '/db/data/'
@@ -130,10 +135,10 @@ Graph.order = property(_order)
 
 
 def graph_find(
-    self,
-    label: object = None,
-    property_key: object = None,
-    property_value: object = None,
+    self: Graph,
+    label: str | None = None,
+    property_key: str | None = None,
+    property_value: str | None = None,
 ):
     properties = {property_key: property_value} if property_key else {}
     return self.nodes.match(label, **properties)
@@ -143,10 +148,10 @@ Graph.find = graph_find
 
 
 def graph_find_one(
-    self,
-    label: str = None,
-    property_key: str = None,
-    property_value: str = None,
+    self: Graph,
+    label: str | None = None,
+    property_key: str | None = None,
+    property_value: str | None = None,
 ):
     return self.find(label, property_key, property_value).first()
 
@@ -158,7 +163,7 @@ Graph._orig_create = Graph.create
 
 
 def graph_create(
-    self, subgraph: Union[Tuple[Node, Relationship, Node], Relationship]
+    self: Graph, subgraph: tuple[Node, Relationship, Node] | Relationship
 ):
     properties = {}
     if issubclass(type(subgraph), tuple):
@@ -177,10 +182,10 @@ Graph._orig_match = Graph.match
 
 def graph_match(
     graph: Graph,
-    start_node: Optional[Node] = None,
-    rel_type: Optional[str] = None,
-    end_node: Optional[Node] = None,
-    limit: Optional[int] = None,
+    start_node: Node | None = None,
+    rel_type: str | None = None,
+    end_node: Node | None = None,
+    limit: int | None = None,
 ):
     """Match relationships between two nodes."""
     return graph._orig_match(
@@ -196,9 +201,9 @@ Graph._orig_match_one = Graph.match_one
 
 def graph_match_one(
     graph: Graph,
-    start_node: Optional[Node] = None,
-    rel_type: Optional[str] = None,
-    end_node: Optional[Node] = None,
+    start_node: Node | None = None,
+    rel_type: str | None = None,
+    end_node: Node | None = None,
 ):
     """Match one relationship between two nodes."""
     return foremost(
@@ -213,9 +218,9 @@ Graph.match_one = graph_match_one
 
 
 def create_node(
-    graph: Optional[py2neo.Graph] = None,
-    labels: Optional[Iterable[str]] = None,
-    properties: Optional[Mapping[str, Any]] = None,
+    graph: py2neo.Graph | None = None,
+    labels: Iterable[str] | None = None,
+    properties: Mapping[str, Any] | None = None,
 ) -> Node:
     properties = properties or {}
     labels = labels or []
@@ -226,13 +231,13 @@ def create_node(
 
 
 def cypher_stream(
-    graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]
+    graph: Graph, query: str, **ps: Mapping[str, Any] | None
 ) -> Iterable:
     return graph.run(query, **ps)
 
 
 def cypher_execute(
-    graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]
+    graph: Graph, query: str, **ps: Mapping[str, Any] | None
 ) -> Iterable:
     return list(graph.run(query, **ps))
 
