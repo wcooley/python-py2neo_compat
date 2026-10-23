@@ -5,4 +5,3 @@ __author__ = """Wil Cooley"""
 __email__ = 'wcooley@nakedape.cc'
 
 from .py2neo_compat import *
-from .util import foremost as foremost
