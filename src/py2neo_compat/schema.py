@@ -82,10 +82,9 @@ def create_schema(graph, schema_map, ignoredups=True):
                 msg = excp.args[0]
 
                 flag = False
-                # import sys
-                # print('Comparing msg="%s"' % msg, file=sys.stderr)
+                # log.warning('Comparing msg="%s"', msg)
                 for m in dup_schema_exception_messages:
-                    # print('with m="%s"' % m, file=sys.stderr)
+                    # log.warning('with m="%s"', m)
                     if m in msg:
                         flag = True
                         break
