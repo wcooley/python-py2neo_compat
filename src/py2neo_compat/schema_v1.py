@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """py2neo schema"""
 
-from __future__ import absolute_import, print_function
 
 import logging
 

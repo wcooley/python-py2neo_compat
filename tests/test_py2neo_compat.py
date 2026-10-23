@@ -1,9 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Tests for `py2neo_compat.py2neo_compat` package."""
-
-from __future__ import absolute_import, print_function
 
 import inspect
 

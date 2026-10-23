@@ -1,9 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Tests for :mod:`py2neo_compat.util`."""
-
-from __future__ import absolute_import, print_function
 
 import os
 import sys
