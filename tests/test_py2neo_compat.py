@@ -1,11 +1,8 @@
 
 """Tests for `py2neo_compat.py2neo_compat` package."""
 
-import inspect
-
 import py2neo
 import pytest
-import six
 
 import py2neo_compat
 from py2neo_compat import (
@@ -85,10 +82,7 @@ def test_monkey_patch_classes(klass, attr):
     assert klass_in_py2neo is klass_in_py2neo_compat
     assert attr_in_py2neo is not None
     assert attr_in_py2neo_compat is not None
-    if six.PY2 and inspect.ismethod(attr_in_py2neo):
-        assert repr(attr_in_py2neo) == repr(attr_in_py2neo_compat)
-    else:
-        assert attr_in_py2neo is attr_in_py2neo_compat
+    assert attr_in_py2neo is attr_in_py2neo_compat
 
     assert attr_in_py2neo.__doc__ is attr_in_py2neo_compat.__doc__
 

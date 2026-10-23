@@ -28,7 +28,6 @@ urls = {Homepage = "https://github.com/wcooley/python-py2neo_compat"}
 dependencies = [
     "boltons",
     "py2neo",
-    "six",
 ]
 
 [project.optional-dependencies]
