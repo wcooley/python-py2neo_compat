@@ -83,10 +83,16 @@ def sample_graph_and_nodes(neo4j_graph):
     g = neo4j_graph
     assert g.neo4j_version
 
-    node_a = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'a', 'py2neo_ver': py2neo_ver})
-    node_b = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'b', 'py2neo_ver': py2neo_ver})
+    node_a = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'a', 'py2neo_ver': py2neo_ver},
+    )
+    node_b = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'b', 'py2neo_ver': py2neo_ver},
+    )
 
     assert None is not node_a
     assert None is not node_b

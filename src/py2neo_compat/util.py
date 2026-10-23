@@ -11,6 +11,7 @@ import importlib
 
 try:  # pragma: no cover
     from typing import Iterable, TypeVar, Callable, Union, Optional
+
     C = TypeVar('C')  # Constructor/Class
     D = TypeVar('D')  # Default
     E = TypeVar('E')  # Element
@@ -66,6 +67,7 @@ def foremost(iterable, default=None, key=lambda x: x is not None):
 try:
     from types import SimpleNamespace
 except ImportError:
+
     class SimpleNamespace:
         """An empty, modifiable class for compatibility with Python < 3.3."""
 
@@ -76,8 +78,8 @@ except ImportError:
         def __repr__(self):  # pragma: no cover
             """Represent."""
             keys = sorted(self.__dict__)
-            items = ("{}={!r}".format(k, self.__dict__[k]) for k in keys)
-            return "{}({})".format(type(self).__name__, ", ".join(items))
+            items = ('{}={!r}'.format(k, self.__dict__[k]) for k in keys)
+            return '{}({})'.format(type(self).__name__, ', '.join(items))
 
 
 def qualify_symbol(symname, ns):

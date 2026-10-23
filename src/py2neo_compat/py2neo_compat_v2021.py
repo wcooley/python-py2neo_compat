@@ -1,6 +1,7 @@
 """
 Compatibility layer for py2neo v2021
 """
+
 from typing import Any, Iterable, List, Mapping, Optional, Tuple, Union
 
 from .util import foremost
@@ -14,7 +15,10 @@ from py2neo import Entity as _Entity
 
 # Monkey-patch py2neo
 
-def _cast_node(*args: Optional[List[str]], **kwargs: Optional[Mapping[str, Any]]) -> Node:
+
+def _cast_node(
+    *args: Optional[List[str]], **kwargs: Optional[Mapping[str, Any]]
+) -> Node:
     """Minimally reproduce staticmethod Node.cast
 
     Reimplement only what we are actually using, for now.
@@ -35,6 +39,8 @@ def _cast_node(*args: Optional[List[str]], **kwargs: Optional[Mapping[str, Any]]
     # Case 3: kwargs only
     else:
         return Node(**kwargs)
+
+
 node = _cast_node
 py2neo.node = _cast_node
 
@@ -45,11 +51,13 @@ py2neo.rel = rel
 Relationship.reltype = property(lambda s: foremost(s.types()))
 
 from py2neo.data import PropertyDict
+
 py2neo_property_classes = (Node, Relationship, PropertyDict)
 
 PropertyDict.to_dict = lambda s: dict(s)
 
 from py2neo.cypher import Record
+
 py2neo.Record = Record
 
 # Monkey-patching Entity (parent class of Node & Relationship)
@@ -64,21 +72,30 @@ _Entity.exists = lambda s: s.identity is not None
 def _node_add_labels(node, *args):
     for label in args:
         node.add_label(label)
+
+
 Node.add_labels = _node_add_labels
 
 
 def _node_match_outgoing(self, rel_type=None, end_node=None, limit=None):
-    return self.graph.match(start_node=self, rel_type=rel_type, end_node=end_node, limit=limit)
+    return self.graph.match(
+        start_node=self, rel_type=rel_type, end_node=end_node, limit=limit
+    )
+
+
 Node.match_outgoing = _node_match_outgoing
 
 
 # Monkey-patching Graph
 
+
 def _graph_service_uri(self):
     uri = self.service.uri
-    if uri.startswith("http") and not uri.endswith("/db/data/"):
-        uri += "/db/data/"
+    if uri.startswith('http') and not uri.endswith('/db/data/'):
+        uri += '/db/data/'
     return uri
+
+
 Graph.uri = property(_graph_service_uri)
 
 
@@ -88,38 +105,61 @@ Graph.node_labels = property(lambda s: s.schema.node_labels)
 
 def _size(graph: Graph) -> int:
     """Number of relationships in graph"""
-    return foremost(foremost(r.values() for r in
-                             cypher_execute(graph,
-                                 'START r=rel(*) RETURN count(r)')))
+    return foremost(
+        foremost(
+            r.values()
+            for r in cypher_execute(graph, 'START r=rel(*) RETURN count(r)')
+        )
+    )
+
+
 Graph.size = property(_size)
 
 
 def _order(graph: Graph) -> int:
     """Number of nodes in graph"""
-    return foremost(foremost(r.values() for r in
-                             cypher_execute(graph,
-                                 'START n=node(*) RETURN count(n)')))
+    return foremost(
+        foremost(
+            r.values()
+            for r in cypher_execute(graph, 'START n=node(*) RETURN count(n)')
+        )
+    )
+
+
 Graph.order = property(_order)
 
 
-def graph_find(self, label: object = None, property_key: object = None,
-               property_value: object = None):
+def graph_find(
+    self,
+    label: object = None,
+    property_key: object = None,
+    property_value: object = None,
+):
     properties = {property_key: property_value} if property_key else {}
     return self.nodes.match(label, **properties)
+
+
 Graph.find = graph_find
 
 
-def graph_find_one(self, label: str = None, property_key: str = None,
-                   property_value: str = None):
+def graph_find_one(
+    self,
+    label: str = None,
+    property_key: str = None,
+    property_value: str = None,
+):
     return self.find(label, property_key, property_value).first()
+
+
 Graph.find_one = graph_find_one
 
 
 Graph._orig_create = Graph.create
 
 
-def graph_create(self, subgraph: Union[
-        Tuple[Node, Relationship, Node], Relationship]):
+def graph_create(
+    self, subgraph: Union[Tuple[Node, Relationship, Node], Relationship]
+):
     properties = {}
     if issubclass(type(subgraph), tuple):
         if type(subgraph[-1]) is dict:
@@ -127,31 +167,45 @@ def graph_create(self, subgraph: Union[
         subgraph = Relationship(*subgraph, **properties)
     self._orig_create(subgraph)
     return (subgraph,)
+
+
 Graph.create = graph_create
 
 
 Graph._orig_match = Graph.match
+
+
 def graph_match(
     graph: Graph,
     start_node: Optional[Node] = None,
     rel_type: Optional[str] = None,
     end_node: Optional[Node] = None,
-    limit: Optional[int] = None
+    limit: Optional[int] = None,
 ):
     """Match relationships between two nodes."""
-    return graph._orig_match((start_node, end_node), r_type=rel_type, limit=limit)
+    return graph._orig_match(
+        (start_node, end_node), r_type=rel_type, limit=limit
+    )
+
+
 Graph.match = graph_match
 
 
 Graph._orig_match_one = Graph.match_one
+
+
 def graph_match_one(
     graph: Graph,
     start_node: Optional[Node] = None,
     rel_type: Optional[str] = None,
-    end_node: Optional[Node] = None
+    end_node: Optional[Node] = None,
 ):
     """Match one relationship between two nodes."""
-    return foremost(graph.match(start_node=start_node, rel_type=rel_type, end_node=end_node))
+    return foremost(
+        graph.match(start_node=start_node, rel_type=rel_type, end_node=end_node)
+    )
+
+
 Graph.match_one = graph_match_one
 
 
@@ -170,11 +224,16 @@ def create_node(
         graph.create(node)
     return node
 
-def cypher_stream(graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]) -> Iterable:
+
+def cypher_stream(
+    graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]
+) -> Iterable:
     return graph.run(query, **ps)
 
 
-def cypher_execute(graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]) -> Iterable:
+def cypher_execute(
+    graph: Graph, query: str, **ps: Optional[Mapping[str, Any]]
+) -> Iterable:
     return list(graph.run(query, **ps))
 
 

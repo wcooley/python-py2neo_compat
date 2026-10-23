@@ -21,6 +21,7 @@ try:
         List,
         Union,
     )
+
     OptionalStrBool = Union[str, bool, None]
 except ImportError:  # pragma: no cover
     "Module 'typing' is optional for 2.7-compatible types in comments"
@@ -47,8 +48,10 @@ def schema_constraints(graph):
 
     constraint_resource = Resource(graph_metadata(graph, 'constraints'))
 
-    return [(c['label'], c['property_keys'], c['type'])
-            for c in constraint_resource.get().content]
+    return [
+        (c['label'], c['property_keys'], c['type'])
+        for c in constraint_resource.get().content
+    ]
 
 
 def schema_indexes(graph):
@@ -62,8 +65,9 @@ def schema_indexes(graph):
     """
     index_resource = Resource(graph_metadata(graph, 'indexes'))
 
-    return [(n['label'], n['property_keys']) for n in
-            index_resource.get().content]
+    return [
+        (n['label'], n['property_keys']) for n in index_resource.get().content
+    ]
 
 
 def schema_template_subpath(label='', property_key='', constraint_type=''):
@@ -86,25 +90,23 @@ def schema_template_subpath(label='', property_key='', constraint_type=''):
     """
 
     # noinspection PyPep8Naming
-    CR = ConditionRecord = NamedTuple('ConditionRecord', [
-        ('label', bool),
-        ('property_key', bool),
-        ('constraint_type', bool),
-    ])
+    CR = ConditionRecord = NamedTuple(
+        'ConditionRecord',
+        [
+            ('label', bool),
+            ('property_key', bool),
+            ('constraint_type', bool),
+        ],
+    )
 
     condition_map = {
         CR(label=False, property_key=False, constraint_type=False): '',
-        CR(True,        property_key=False, constraint_type=False): '{label}/',
-
-        CR(True,        True,               constraint_type=False):
-            '{label}/{property_key}',
-
-        CR(True,        property_key=False, constraint_type=True):
-            '{label}/%(constraint_type)s',
-
-        CR(True,        True,               True):
-            '{label}/%(constraint_type)s/{property_key}',
-
+        CR(True, property_key=False, constraint_type=False): '{label}/',
+        CR(True, True, constraint_type=False): '{label}/{property_key}',
+        CR(
+            True, property_key=False, constraint_type=True
+        ): '{label}/%(constraint_type)s',
+        CR(True, True, True): '{label}/%(constraint_type)s/{property_key}',
     }
 
     condition_key = CR(bool(label), bool(property_key), bool(constraint_type))
@@ -112,21 +114,24 @@ def schema_template_subpath(label='', property_key='', constraint_type=''):
     try:
         template = condition_map[condition_key]
     except KeyError:
-        raise ValueError('Invalid params for schema subpath condition_key="%s"'
-                         % (condition_key,))
+        raise ValueError(
+            'Invalid params for schema subpath condition_key="%s"'
+            % (condition_key,)
+        )
 
     template = template % {'constraint_type': constraint_type}
 
     return template
 
 
-def _schema_template(graph, schema_type, label=None, property_key=None,
-                     constraint_type=''):
+def _schema_template(
+    graph, schema_type, label=None, property_key=None, constraint_type=''
+):
     """Generate a URITemplate for schema."""
 
-    subpath = schema_template_subpath(label=label,
-                                      property_key=property_key,
-                                      constraint_type=constraint_type)
+    subpath = schema_template_subpath(
+        label=label, property_key=property_key, constraint_type=constraint_type
+    )
 
     uri = graph_metadata(graph, schema_type)
     uri = urljoin(uri + '/', subpath)
@@ -138,11 +143,13 @@ def _schema_template(graph, schema_type, label=None, property_key=None,
 def drop_constraint(graph, constraint_type, label, property_key):
     # type: (Graph, str, str) -> None
 
-    key_template = _schema_template(graph,
-                                    schema_type='constraints',
-                                    constraint_type=constraint_type,
-                                    label=label,
-                                    property_key=property_key)
+    key_template = _schema_template(
+        graph,
+        schema_type='constraints',
+        constraint_type=constraint_type,
+        label=label,
+        property_key=property_key,
+    )
 
     url_expanded = key_template.expand(label=label, property_key=property_key)
     resource = Resource(url_expanded)
@@ -150,20 +157,26 @@ def drop_constraint(graph, constraint_type, label, property_key):
     try:
         resource.delete()
     except Exception:
-        log.exception('error deleting constraint'
-                      ' type="%s" label="%s" property="%s"',
-                      constraint_type, label, property_key)
+        log.exception(
+            'error deleting constraint type="%s" label="%s" property="%s"',
+            constraint_type,
+            label,
+            property_key,
+        )
         raise
 
 
 def _create_constraint(graph, constraint_type, label, property_key):
     """Create a uniqueness constraint."""
-    tpl = _schema_template(graph, 'constraints',
-                           label=label, property_key=False,
-                           constraint_type=constraint_type)
-    resource = Resource(tpl.expand(label=label,
-                                   property_key=property_key))
-    resource.post({"property_keys": [property_key]})
+    tpl = _schema_template(
+        graph,
+        'constraints',
+        label=label,
+        property_key=False,
+        constraint_type=constraint_type,
+    )
+    resource = Resource(tpl.expand(label=label, property_key=property_key))
+    resource.post({'property_keys': [property_key]})
 
 
 def graph_metadata(graph, key=None):

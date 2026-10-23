@@ -9,8 +9,15 @@ import logging
 try:
     # noinspection PyUnresolvedReferences
     from typing import (
-        Any, Dict, List, Mapping, NamedTuple, Optional,
-        Union, Tuple, Iterable,  # noqa
+        Any,
+        Dict,
+        List,
+        Mapping,
+        NamedTuple,
+        Optional,
+        Union,
+        Tuple,
+        Iterable,  # noqa
     )
 except ImportError:  # pragma: no cover
     """Module :mod:`typing` not required for Py27-compatible type comments."""
@@ -35,7 +42,7 @@ elif py2neo.__version__.startswith('2021'):  # pragma: no cover
     from .py2neo_compat_v2021 import *
 
 else:  # pragma: no cover
-    raise NotImplementedError("py2neo %s not supported" % py2neo.__version__)
+    raise NotImplementedError('py2neo %s not supported' % py2neo.__version__)
 
 
 if False:  # Trick PyCharm into believing that these exist
@@ -52,7 +59,9 @@ def monkey_patch_py2neo():
     pass
 
 
-def py2neo_entity_to_dict(self: Union[Node,Relationship,Any]) -> Dict[str, Any]:
+def py2neo_entity_to_dict(
+    self: Union[Node, Relationship, Any],
+) -> Dict[str, Any]:
     """Convert an "entity" to a `dict`.
 
     All three major versions are incompatible with how to get a dict
@@ -75,6 +84,7 @@ def py2neo_entity_to_dict(self: Union[Node,Relationship,Any]) -> Dict[str, Any]:
     finally:
         self = dict(self)
     return self
+
 
 to_dict = py2neo_entity_to_dict
 

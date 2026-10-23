@@ -1,6 +1,7 @@
 """
 Compatibility layer for py2neo v1
 """
+
 from .util import foremost
 
 import py2neo
@@ -8,6 +9,7 @@ from py2neo.neo4j import GraphDatabaseService as Graph
 from py2neo.neo4j import Node
 from py2neo.neo4j import Relationship
 from py2neo.neo4j import ServerError as DatabaseError
+
 py2neo.DatabaseError = DatabaseError
 
 from py2neo.neo4j import CypherQuery as _CypherQuery
@@ -41,8 +43,9 @@ def create_node(
     properties = properties or {}
 
     if labels and graph is None:
-        raise TypeError('Parameter "graph" is required for py2neo v1 with'
-                        ' labels')
+        raise TypeError(
+            'Parameter "graph" is required for py2neo v1 with labels'
+        )
 
     new_node = node(properties)
     if graph is not None:
@@ -55,11 +58,14 @@ def create_node(
 def cypher_execute(graph, query, **params):
     return _CypherQuery(graph, query).execute(**params)
 
+
 def cypher_stream(graph, query, **params):
     return _CypherQuery(graph, query).stream(**params)
 
+
 def update_properties(entity, properties):
     entity.update_properties(properties)
+
 
 def set_properties(entity, properties):
     entity.set_properties(properties)
