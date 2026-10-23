@@ -13,12 +13,6 @@ if py2neo_ver == 2021:
     from py2neo_compat.schema_v2021 import *
 
     from .schema_v2021 import drop_constraint
-elif py2neo_ver == 2:
-    from py2neo_compat.schema_v2 import *
-elif py2neo_ver == 1:
-    from py2neo_compat.schema_v1 import *
-
-    from .schema_v1 import _create_constraint, drop_constraint
 
 SchemaItem = NamedTuple(
     'SchemaItem',
@@ -32,10 +26,7 @@ SchemaItem = NamedTuple(
 def create_uniqueness_constraint(graph, label, property_key):
     """Create uniqueness constraint."""
     # type: (Graph, str, str) -> None
-    if hasattr(graph.schema, 'create_uniqueness_constraint'):
-        graph.schema.create_uniqueness_constraint(label, property_key)
-    else:
-        _create_constraint(graph, 'uniqueness', label, property_key)
+    graph.schema.create_uniqueness_constraint(label, property_key)
 
 
 def create_schema(graph, schema_map, ignoredups=True):
