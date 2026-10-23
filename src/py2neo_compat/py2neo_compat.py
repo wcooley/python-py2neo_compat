@@ -26,19 +26,11 @@ log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
 
 
-if py2neo.__version__.startswith('1.6'):
-    py2neo_ver = 1
-    from .py2neo_compat_v1 import *
-
-elif py2neo.__version__.startswith('2.0'):
-    py2neo_ver = 2
-    from .py2neo_compat_v2 import *
-
-elif py2neo.__version__.startswith('2021'):  # pragma: no cover
+if py2neo.__version__.startswith('2021'):
     py2neo_ver = 2021
     from .py2neo_compat_v2021 import *
 
-else:  # pragma: no cover
+else:
     raise NotImplementedError('py2neo %s not supported' % py2neo.__version__)
 
 
