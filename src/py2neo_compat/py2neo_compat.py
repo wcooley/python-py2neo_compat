@@ -5,10 +5,15 @@ from collections.abc import Iterable, Mapping
 from typing import Any
 
 import py2neo
-
-log = logging.getLogger(__name__)  # pylint: disable=invalid-name
-log.addHandler(logging.NullHandler())
-
+from py2neo import (
+    Graph as Graph,
+)
+from py2neo import (
+    Node as Node,
+)
+from py2neo import (
+    Relationship as Relationship,
+)
 
 if py2neo.__version__.startswith('2021'):
     py2neo_ver = 2021
@@ -18,13 +23,8 @@ else:
     raise NotImplementedError('py2neo %s not supported' % py2neo.__version__)
 
 
-if False:  # Trick PyCharm into believing that these exist
-    Graph = py2neo.Graph
-    Node = py2neo.Node
-    Relationship = py2neo.Relationship
-    Resource = py2neo.Resource
-    rel = py2neo.rel
-    node = py2neo.node
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+log.addHandler(logging.NullHandler())
 
 
 def monkey_patch_py2neo():

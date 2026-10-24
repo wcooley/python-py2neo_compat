@@ -5,11 +5,21 @@ Compatibility layer for py2neo v2021
 from typing import Any, Iterable, List, Mapping, Optional, Tuple, Union
 
 import py2neo
-from py2neo import DatabaseError as DatabaseError
-from py2neo import Entity as _Entity
-from py2neo import Graph as Graph
-from py2neo import Node as Node
-from py2neo import Relationship as Relationship
+from py2neo import (
+    DatabaseError as DatabaseError,
+)
+from py2neo import (
+    Entity as _Entity,
+)
+from py2neo import (
+    Graph as Graph,
+)
+from py2neo import (
+    Node as Node,
+)
+from py2neo import (
+    Relationship as Relationship,
+)
 
 from .util import foremost
 
