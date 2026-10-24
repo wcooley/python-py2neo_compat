@@ -36,28 +36,9 @@ def py2neo_entity_to_dict(
     self: Node | Relationship,
 ) -> dict[str, Any]:
     """Convert an "entity" to a `dict`.
-
-    All three major versions are incompatible with how to get a dict
-    from the properties of an entity:
-
-    * 1.6 only needs get_properties() (but dict() doesn't hurt)
-    * 2 requires both get_properties and dict()
-    * 3 only needs dict() and has no get_properties
-
-    Catching :class:`AttributeError` also allows this to work a PropertySet,
-    which is the output of `get_properties()` on 2.
     """
     assert isinstance(self, py2neo_property_classes)
-
-    try:
-        # noinspection PyUnresolvedReferences
-        self = self.get_properties()
-    except AttributeError:
-        pass
-    finally:
-        self = dict(self)
-    return self
-
+    return dict(self)
 
 to_dict = py2neo_entity_to_dict
 
