@@ -9,6 +9,7 @@ from py2neo_compat.schema import (
     SchemaItem,
     create_schema,
     create_uniqueness_constraint,
+    drop_constraint,
     drop_schema,
     schema_constraints,
     schema_indexes,
@@ -51,6 +52,19 @@ def test_drop_schema(sample_graph):
 
     assert len(list(schema_constraints(g))) == 0
     assert len(list(schema_indexes(g))) == 0
+
+@pytest.mark.integration
+def test_drop_constraint(sample_graph):
+    """Test the :func:`drop_constraint` works."""
+    g = sample_graph
+
+    create_uniqueness_constraint(g, 'thingy', 'name')
+
+    assert len(list(schema_constraints(g))) == 1
+
+    drop_constraint(g, 'uniqueness', 'thingy', 'name')
+
+    assert len(list(schema_constraints(g))) == 0
 
 
 @pytest.mark.integration
