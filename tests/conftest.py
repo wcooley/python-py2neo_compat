@@ -1,16 +1,13 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Test fixtures & config for :mod:`py2neo_compat`."""
 
-from __future__ import absolute_import, print_function
-
-import os
-import pytest  # noqa
 import logging
+import os
+
+import pytest  # noqa
 
 import py2neo_compat
-from py2neo_compat import Graph, py2neo_ver, create_node
+from py2neo_compat import Graph, create_node, py2neo_ver
 from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -83,10 +80,16 @@ def sample_graph_and_nodes(neo4j_graph):
     g = neo4j_graph
     assert g.neo4j_version
 
-    node_a = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'a', 'py2neo_ver': py2neo_ver})
-    node_b = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'b', 'py2neo_ver': py2neo_ver})
+    node_a = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'a', 'py2neo_ver': py2neo_ver},
+    )
+    node_b = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'b', 'py2neo_ver': py2neo_ver},
+    )
 
     assert None is not node_a
     assert None is not node_b

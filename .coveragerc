@@ -8,7 +8,14 @@ source =
     */site-packages/py2neo_compat
 
 [report]
-exclude_lines =
-    pragma: no cover
-    py2neo_ver == 3
-    py2neo_v3
+exclude_also =
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    class .*\bProtocol\):
+    @(abc\.)?abstractmethod

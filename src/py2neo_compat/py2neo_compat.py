@@ -1,50 +1,30 @@
-# -*- coding: utf-8 -*-
-
 """Main module."""
 
-from __future__ import absolute_import, print_function
-
 import logging
-
-try:
-    # noinspection PyUnresolvedReferences
-    from typing import (
-        Any, Dict, List, Mapping, NamedTuple, Optional,
-        Union, Tuple, Iterable,  # noqa
-    )
-except ImportError:  # pragma: no cover
-    """Module :mod:`typing` not required for Py27-compatible type comments."""
-
+from collections.abc import Iterable, Mapping
+from typing import Any
 
 import py2neo
+from py2neo import (
+    Graph as Graph,
+)
+from py2neo import (
+    Node as Node,
+)
+from py2neo import (
+    Relationship as Relationship,
+)
 
-log = logging.getLogger(__name__)  # pylint: disable=invalid-name
-log.addHandler(logging.NullHandler())
-
-
-if py2neo.__version__.startswith('1.6'):
-    py2neo_ver = 1
-    from .py2neo_compat_v1 import *
-
-elif py2neo.__version__.startswith('2.0'):
-    py2neo_ver = 2
-    from .py2neo_compat_v2 import *
-
-elif py2neo.__version__.startswith('2021'):  # pragma: no cover
+if py2neo.__version__.startswith('2021'):
     py2neo_ver = 2021
     from .py2neo_compat_v2021 import *
 
-else:  # pragma: no cover
-    raise NotImplementedError("py2neo %s not supported" % py2neo.__version__)
+else:
+    raise NotImplementedError('py2neo %s not supported' % py2neo.__version__)
 
 
-if False:  # Trick PyCharm into believing that these exist
-    Graph = py2neo.Graph
-    Node = py2neo.Node
-    Relationship = py2neo.Relationship
-    Resource = py2neo.Resource
-    rel = py2neo.rel
-    node = py2neo.node
+log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+log.addHandler(logging.NullHandler())
 
 
 def monkey_patch_py2neo():
@@ -52,30 +32,13 @@ def monkey_patch_py2neo():
     pass
 
 
-def py2neo_entity_to_dict(entity):
-    # type: (Union[Node,Relationship,PropertySet]) -> Dict[str, Any]
+def py2neo_entity_to_dict(
+    self: Node | Relationship,
+) -> dict[str, Any]:
     """Convert an "entity" to a `dict`.
-
-    All three major versions are incompatible with how to get a dict
-    from the properties of an entity:
-
-    * 1.6 only needs get_properties() (but dict() doesn't hurt)
-    * 2 requires both get_properties and dict()
-    * 3 only needs dict() and has no get_properties
-
-    Catching :class:`AttributeError` also allows this to work a PropertySet,
-    which is the output of `get_properties()` on 2.
     """
-    assert isinstance(entity, py2neo_property_classes)
-
-    try:
-        # noinspection PyUnresolvedReferences
-        entity = entity.get_properties()
-    except AttributeError:
-        pass
-    finally:
-        entity = dict(entity)
-    return entity
+    assert isinstance(self, py2neo_property_classes)
+    return dict(self)
 
 to_dict = py2neo_entity_to_dict
 
@@ -85,9 +48,13 @@ for cls in py2neo_property_classes:
 
 
 def create_unique_rel(
-    graph, start_node, rel_type, end_node, prop_key=None, prop_val=None
+    graph: Graph,
+    start_node: Node,
+    rel_type: str,
+    end_node: Node,
+    prop_key: str | None = None,
+    prop_val: Any | None = None,
 ):
-    # type: (Graph, Node, str, Node, Optional[str], Optional[Any]) -> Relationship
     """Get or create a unique relationship.
 
     py2neo 1.6 has similar functionality but not 2.0
