@@ -477,6 +477,12 @@ def test_create_unique_rel(sample_graph_and_nodes):
     assert ur.end_node == node_b
     assert ur.reltype == 'new_rel'
 
+    ur = create_unique_rel(g, start_node=node_a, rel_type='rel_with_prop', end_node=node_b, prop_key='finger', prop_val='lickin')
+    assert ur.start_node == node_a
+    assert ur.end_node == node_b
+    assert ur.reltype == 'rel_with_prop'
+    assert ur['finger'] == 'lickin'
+
 
 @pytest.mark.integration
 def test_create_unique_rel_dup_rel(sample_graph):
