@@ -2,6 +2,7 @@
 """Tests for :mod:`py2neo_compat.util`."""
 
 import pytest
+
 from py2neo_compat import Node
 from py2neo_compat.util import foremost
 

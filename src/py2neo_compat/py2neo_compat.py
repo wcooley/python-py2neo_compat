@@ -27,8 +27,7 @@ log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
 
 
-def monkey_patch_py2neo():
-    # type: () -> None
+def monkey_patch_py2neo() -> None:
     pass
 
 

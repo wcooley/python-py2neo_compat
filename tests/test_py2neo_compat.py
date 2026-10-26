@@ -6,6 +6,7 @@ import pytest
 
 import py2neo_compat
 from py2neo_compat import (
+    Graph,
     Node,
     Relationship,
     create_node,
@@ -88,8 +89,7 @@ def test_monkey_patch_classes(klass, attr):
 
 
 @pytest.mark.integration
-def test_graph_delete_all(sample_graph):
-    # type: (py2neo.Graph) -> None
+def test_graph_delete_all(sample_graph: Graph) -> None:
     """Test :meth:`Graph.delete_all`."""
 
     py2neo_compat.monkey_patch_py2neo()
@@ -176,8 +176,7 @@ def test_create_node(neo4j_graph, labels, properties):
 
 
 @pytest.mark.integration
-def test_graph_create_can_create_relationship(neo4j_graph):
-    # type: (Graph) -> None
+def test_graph_create_can_create_relationship(neo4j_graph: Graph) -> None:
 
     def _assert_alice_knows_bob(alice, bob, knows):
         assert isinstance(alice, Node)
@@ -195,7 +194,7 @@ def test_graph_create_can_create_relationship(neo4j_graph):
     alice = create_node(g, properties={'name': 'Alice'})
     bob = create_node(g, properties={'name': 'Bob'})
 
-    knows_rel = py2neo.Relationship(alice, 'KNOWS', bob, **{'since': '2006'})
+    knows_rel = Relationship(alice, 'KNOWS', bob, **{'since': '2006'})
     create_result = g.create(knows_rel)
     assert create_result is not None
 
@@ -437,8 +436,7 @@ def test_update_properties(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_graph_cypher_execute(sample_graph):
-    # type: (py2neo.Graph) -> None
+def test_graph_cypher_execute(sample_graph: Graph) -> None:
     """Ensure :meth:`Graph.cypher.execute` works."""
 
     r = cypher_execute(
@@ -453,8 +451,7 @@ def test_graph_cypher_execute(sample_graph):
 
 
 @pytest.mark.integration
-def test_graph_cypher_stream(sample_graph):
-    # type: (py2neo.Graph) -> None
+def test_graph_cypher_stream(sample_graph: Graph) -> None:
     """Ensure :meth:`Graph.cypher.stream` works."""
 
     r = cypher_stream(

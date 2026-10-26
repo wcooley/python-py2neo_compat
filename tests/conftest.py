@@ -9,7 +9,7 @@ import py2neo
 import pytest
 
 import py2neo_compat
-from py2neo_compat import Graph, create_node, py2neo_ver
+from py2neo_compat import Graph, Node, create_node, py2neo_ver
 from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -34,16 +34,14 @@ def logging_config():
 
 
 @pytest.fixture(scope='session')
-def neo4j_uri():
-    # type: () -> str
+def neo4j_uri() -> str:
     """Neo4J URI.  Set env NEO4J_URI or override fixture to change."""
     return os.environ.get('NEO4J_URI', 'http://localhost:7474/db/data/')
 
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def neo4j_graph_object(neo4j_uri):
-    # type: (str) -> Graph
+def neo4j_graph_object(neo4j_uri: str) -> Graph:
     """Create a Graph object from a URI."""
     graph = Graph(neo4j_uri)
     # This forces communication with the server, so it serves as an
@@ -54,8 +52,7 @@ def neo4j_graph_object(neo4j_uri):
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def neo4j_graph_schemaless(neo4j_graph_object):
-    # type: (Graph) -> Graph
+def neo4j_graph_schemaless(neo4j_graph_object: Graph) -> Graph:
     """Graph instance cleared of all schema."""
     graph = neo4j_graph_object
     try:
@@ -70,8 +67,7 @@ def neo4j_graph_schemaless(neo4j_graph_object):
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def neo4j_graph_empty(neo4j_graph_object):
-    # type: (Graph) -> Graph
+def neo4j_graph_empty(neo4j_graph_object: Graph) -> Graph:
     """Graph instance with no nodes or relationships."""
     py2neo_compat.monkey_patch_py2neo()
     graph = neo4j_graph_object
@@ -81,15 +77,14 @@ def neo4j_graph_empty(neo4j_graph_object):
 
 # noinspection PyShadowingNames,PyUnusedLocal
 @pytest.fixture
-def neo4j_graph(neo4j_graph_schemaless, neo4j_graph_empty):
-    # type: (Graph, Graph) -> Graph
+def neo4j_graph(neo4j_graph_schemaless: Graph, neo4j_graph_empty: Graph) -> Graph:
     """Test Neo4j graph fixture."""
     return neo4j_graph_schemaless
 
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def sample_graph_and_nodes(neo4j_graph):
+def sample_graph_and_nodes(neo4j_graph: Graph) -> tuple[Graph, Node, Node]:
     """Sample graph with some nodes."""
     g = neo4j_graph
     assert g.neo4j_version
@@ -119,6 +114,6 @@ def sample_graph_and_nodes(neo4j_graph):
 
 
 @pytest.fixture
-def sample_graph(sample_graph_and_nodes):
+def sample_graph(sample_graph_and_nodes: tuple[Graph, Node, Node]) -> Graph:
     """Sample graph only."""
     return foremost(sample_graph_and_nodes)

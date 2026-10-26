@@ -1,9 +1,8 @@
 
 """Tests for :mod:`py2neo_compat.schema`."""
 
-import pytest  # noqa
+import pytest
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
 from py2neo_compat import Graph
 from py2neo_compat.schema import (
     SchemaItem,
@@ -16,7 +15,7 @@ from py2neo_compat.schema import (
 )
 
 
-def test_schema_indexes(sample_graph):
+def test_schema_indexes(sample_graph: Graph):
     g = sample_graph
     create_schema(
         g,
@@ -29,7 +28,7 @@ def test_schema_indexes(sample_graph):
 
 
 @pytest.mark.integration
-def test_drop_schema(sample_graph):
+def test_drop_schema(sample_graph: Graph):
     """Test the :func:`drop_schema` works."""
     g = sample_graph
 
@@ -138,8 +137,7 @@ indexes_map = {
     ],
 )
 @pytest.mark.integration
-def test_create_schema_dup_indexes(neo4j_graph, schema1, schema2):
-    # type: (Graph, Graph) -> None
+def test_create_schema_dup_indexes(neo4j_graph, schema1: Graph, schema2: Graph) -> None:
     """Creating the same schema twice works as expected."""
     g = neo4j_graph
 

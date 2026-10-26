@@ -92,15 +92,13 @@ dup_schema_exception_messages = [
 ]
 
 
-def drop_schema(graph):
-    # type: (Graph) -> None
+def drop_schema(graph: Graph) -> None:
     """Drop all constraints and indexes."""
     drop_constraints(graph)
     drop_indexes(graph)
 
 
-def drop_constraints(graph):
-    # type: (Graph) -> None
+def drop_constraints(graph: Graph) -> None:
     """Drop all constraints."""
     constraint_dispatch = {
         'UNIQUENESS': getattr(
@@ -122,8 +120,7 @@ def drop_constraints(graph):
             constraint_dispatch[type_](label, propkey)
 
 
-def drop_indexes(graph):
-    # type: (Graph) -> None
+def drop_indexes(graph: Graph) -> None:
     """Drop all schema indexes."""
     for label, property_keys in schema_indexes(graph):
         log.debug(
