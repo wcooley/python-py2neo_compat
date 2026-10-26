@@ -3,8 +3,10 @@
 
 import logging
 import os
+from pathlib import Path
 
-import pytest  # noqa
+import py2neo
+import pytest
 
 import py2neo_compat
 from py2neo_compat import Graph, create_node, py2neo_ver
@@ -12,6 +14,18 @@ from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
+
+
+def pytest_report_header(config, start_path: Path):
+    """Add versions & config info to test output on terminal."""
+    lines = []
+
+    if 'NEO4J_URI' in os.environ:
+        lines.append(f'Neo4J URI: {os.environ["NEO4J_URI"]}')
+
+    lines.append(f'py2neo: {py2neo.__version__}')
+
+    return lines
 
 
 @pytest.fixture(scope='session', autouse=True)
