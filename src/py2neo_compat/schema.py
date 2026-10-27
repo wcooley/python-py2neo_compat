@@ -14,13 +14,9 @@ if py2neo_ver == 2021:
 
     from .schema_v2021 import drop_constraint
 
-SchemaItem = NamedTuple(
-    'SchemaItem',
-    [
-        ('label', str),
-        ('property_key', str),
-    ],
-)
+class SchemaItem(NamedTuple):
+    label: str
+    property_key: str
 
 
 def create_uniqueness_constraint(graph: Graph, label: str, property_key: str) -> None:
