@@ -2,28 +2,20 @@
 Compatibility layer for py2neo v2021
 """
 
-from typing import Any, Iterable, List, Mapping, Optional, Tuple, Union
+from collections.abc import Iterable, Mapping
+from typing import Any
 
 import py2neo
 from py2neo import (
-    DatabaseError as DatabaseError,
-)
-from py2neo import (
-    Entity as _Entity,
-)
-from py2neo import (
-    Graph as Graph,
-)
-from py2neo import (
-    Node as Node,
-)
-from py2neo import (
-    Relationship as Relationship,
+    DatabaseError,  # noqa F401
+    Entity,
+    Graph,
+    Node,
+    Relationship,
 )
 
 from .util import foremost
 
-# Monkey-patch py2neo
 
 
 def _cast_node(
@@ -72,10 +64,10 @@ py2neo.Record = Record
 
 # Monkey-patching Entity (parent class of Node & Relationship)
 
-_Entity._id = property(lambda s: s.identity)
-_Entity.push = lambda s: s.graph.push(s)
-_Entity.pull = lambda s: s.graph.pull(s)
-_Entity.exists = lambda s: s.identity is not None
+Entity._id = property(lambda s: s.identity)
+Entity.push = lambda s: s.graph.push(s)
+Entity.pull = lambda s: s.graph.pull(s)
+Entity.exists = lambda s: s.identity is not None
 
 
 # Monkey-patching Node
@@ -252,11 +244,11 @@ def cypher_execute(
     return list(graph.run(query, **ps))
 
 
-def update_properties(entity: _Entity, properties: Mapping[str, Any]):
+def update_properties(entity: Entity, properties: Mapping[str, Any]):
     entity.update(properties)
 
 
-def set_properties(entity: _Entity, properties: Mapping[str, Any]):
+def set_properties(entity: Entity, properties: Mapping[str, Any]):
     entity.clear()
     entity.update(properties)
 
