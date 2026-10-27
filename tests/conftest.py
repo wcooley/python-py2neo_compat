@@ -8,7 +8,6 @@ from pathlib import Path
 import py2neo
 import pytest
 
-import py2neo_compat
 from py2neo_compat import Graph, Node, create_node, py2neo_ver
 from py2neo_compat.util import foremost
 
