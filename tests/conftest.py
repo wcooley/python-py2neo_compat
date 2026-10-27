@@ -69,7 +69,6 @@ def neo4j_graph_schemaless(neo4j_graph_object: Graph) -> Graph:
 @pytest.fixture
 def neo4j_graph_empty(neo4j_graph_object: Graph) -> Graph:
     """Graph instance with no nodes or relationships."""
-    py2neo_compat.monkey_patch_py2neo()
     graph = neo4j_graph_object
     graph.delete_all()
     return graph

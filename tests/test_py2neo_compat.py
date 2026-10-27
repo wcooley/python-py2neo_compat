@@ -71,8 +71,6 @@ def test_import_symbol__all__(symbol):
 def test_monkey_patch_classes(klass, attr):
     """Test that monkey patch installs the expected symbols."""
 
-    py2neo_compat.monkey_patch_py2neo()
-
     klass_in_py2neo = getattr(py2neo, klass)
     attr_in_py2neo = getattr(klass_in_py2neo, attr)
     klass_in_py2neo_compat = getattr(py2neo_compat, klass)
@@ -91,8 +89,6 @@ def test_monkey_patch_classes(klass, attr):
 @pytest.mark.integration
 def test_graph_delete_all(sample_graph: Graph) -> None:
     """Test :meth:`Graph.delete_all`."""
-
-    py2neo_compat.monkey_patch_py2neo()
 
     g = sample_graph
 

@@ -28,7 +28,7 @@ log.addHandler(logging.NullHandler())
 
 
 def monkey_patch_py2neo() -> None:
-    pass
+    raise DeprecationWarning('monkey_patch_py2neo')
 
 
 def py2neo_entity_to_dict(
