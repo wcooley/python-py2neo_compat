@@ -1,6 +1,14 @@
 History
 =======
 
+2026.11.5.0 (2026-11-05)
+------------------------
+
+-   Support only Python 3.12, py2neo 2021.2.4, Neo4j 3.5; drop all other
+    support.
+-   Update build system to use `pyproject.toml`.
+-   Switch to CalVer versioning.
+
 2.0.0 (2025-10-08)
 ------------------
 

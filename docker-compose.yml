@@ -8,10 +8,9 @@
 # and using that in the other definitions will *not* work.
 #
 
-version: '3'
 services:
     neo4j:
-        image: neo4j:3.0
+        image: neo4j:3.5
         environment:
             NEO4J_AUTH: none
         ports:

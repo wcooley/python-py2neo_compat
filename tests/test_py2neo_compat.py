@@ -1,18 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Tests for `py2neo_compat.py2neo_compat` package."""
 
-from __future__ import absolute_import, print_function
-
-import inspect
-
-import pytest
 import py2neo
-import six
+import pytest
 
-from py2neo_compat.util import foremost
+import py2neo_compat
 from py2neo_compat import (
+    Graph,
     Node,
     Relationship,
     create_node,
@@ -25,7 +19,7 @@ from py2neo_compat import (
     rel,
     to_dict,
 )
-import py2neo_compat
+from py2neo_compat.util import foremost
 
 
 def test_imported_symbols():
@@ -37,12 +31,12 @@ def test_imported_symbols():
 
 
 @pytest.mark.parametrize(
-    'symbol', [
+    'symbol',
+    [
         'Graph',
         'Node',
         'Relationship',
         # 'Record',
-        'create_node',
         'create_node',
         'cypher_execute',
         'cypher_stream',
@@ -51,7 +45,7 @@ def test_imported_symbols():
         # 'ServerError',
         # 'ClientError',
         # 'URI',
-    ]
+    ],
 )
 def test_import_symbol__all__(symbol):
     """Test symbols in `__all__`."""
@@ -61,7 +55,8 @@ def test_import_symbol__all__(symbol):
 
 
 @pytest.mark.parametrize(
-    ('klass', 'attr'), [
+    ('klass', 'attr'),
+    [
         ('Graph', 'delete_all'),
         ('Graph', 'uri'),
         ('Graph', 'find_one'),
@@ -70,12 +65,10 @@ def test_import_symbol__all__(symbol):
         ('Node', 'labels'),
         ('Relationship', 'push'),
         ('Relationship', 'pull'),
-    ]
+    ],
 )
 def test_monkey_patch_classes(klass, attr):
     """Test that monkey patch installs the expected symbols."""
-
-    py2neo_compat.monkey_patch_py2neo()
 
     klass_in_py2neo = getattr(py2neo, klass)
     attr_in_py2neo = getattr(klass_in_py2neo, attr)
@@ -87,20 +80,14 @@ def test_monkey_patch_classes(klass, attr):
     assert klass_in_py2neo is klass_in_py2neo_compat
     assert attr_in_py2neo is not None
     assert attr_in_py2neo_compat is not None
-    if six.PY2 and inspect.ismethod(attr_in_py2neo):
-        assert repr(attr_in_py2neo) == repr(attr_in_py2neo_compat)
-    else:
-        assert attr_in_py2neo is attr_in_py2neo_compat
+    assert attr_in_py2neo is attr_in_py2neo_compat
 
     assert attr_in_py2neo.__doc__ is attr_in_py2neo_compat.__doc__
 
 
 @pytest.mark.integration
-def test_graph_delete_all(sample_graph):
-    # type: (py2neo.Graph) -> None
+def test_graph_delete_all(sample_graph: Graph) -> None:
     """Test :meth:`Graph.delete_all`."""
-
-    py2neo_compat.monkey_patch_py2neo()
 
     g = sample_graph
 
@@ -116,33 +103,34 @@ def test_graph_delete_all(sample_graph):
 
 
 @pytest.mark.integration
-def test_node_add_labels(sample_graph_and_nodes):
+def test_node_add_labels(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     """Test :meth:`Node.add_labels`."""
-    g, node_a, *_ = sample_graph_and_nodes
+    _, node_a, *_ = sample_graph_and_nodes
     assert node_a.labels == {'thingy'}
     node_a.add_labels('one', 'two')
     assert node_a.labels == {'one', 'two', 'thingy'}
 
 
 @pytest.mark.integration
-def test_graph_node_labels(sample_graph_and_nodes):
+def test_graph_node_labels(sample_graph: Graph):
     """Test :meth:`Graph.node_lables`."""
-    g, *_ = sample_graph_and_nodes
+    g = sample_graph
     assert g.node_labels == {'thingy'}
 
 
 @pytest.mark.integration
-def test_graph_has_uri(neo4j_graph_object):
+def test_graph_has_uri(neo4j_graph_object: Graph):
     """Test :meth:`Graph.uri`."""
 
-    assert str(neo4j_graph_object.uri) != ""
-    assert str(neo4j_graph_object.uri).endswith("/db/data/")
+    assert str(neo4j_graph_object.uri) != ''
+    if str(neo4j_graph_object.uri).startswith('http'):
+        assert str(neo4j_graph_object.uri).endswith('/db/data/')
 
 
 @pytest.mark.integration
-def test_node_exists(sample_graph_and_nodes):
+def test_node_exists(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     """Test :meth:`Node.exists`."""
-    g, node_a, node_b = sample_graph_and_nodes
+    _, node_a, _ = sample_graph_and_nodes
     assert node_a.exists
 
     # This doesn't work
@@ -150,9 +138,9 @@ def test_node_exists(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_node_match_outgoing(sample_graph_and_nodes):
+def test_node_match_outgoing(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     """Test :meth:`Node.match_outgoing`."""
-    g, node_a, node_b = sample_graph_and_nodes
+    _, node_a, node_b = sample_graph_and_nodes
 
     results = list(node_a.match_outgoing(rel_type='points_to'))
     assert len(results) == 1
@@ -163,13 +151,16 @@ def test_node_match_outgoing(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize(('labels', 'properties'), [
-    (('restauranteur',), {'name': 'Alice'}),        # Label, property
-    ((), {}),                                       # Empty iterable, empty map
-    (None, None),                                   # Nada, Nada
-    ({'person'}, {}),                               # Label, empty map
-    ([], {'name': 'Alice'}),                        # Empty iterable, property
-])
+@pytest.mark.parametrize(
+    ('labels', 'properties'),
+    [
+        (('restauranteur',), {'name': 'Alice'}),  # Label, property
+        ((), {}),  # Empty iterable, empty map
+        (None, None),  # Nada, Nada
+        ({'person'}, {}),  # Label, empty map
+        ([], {'name': 'Alice'}),  # Empty iterable, property
+    ],
+)
 def test_create_node(neo4j_graph, labels, properties):
     """Test :func:`~py2neo_compat.create_node`."""
 
@@ -180,8 +171,7 @@ def test_create_node(neo4j_graph, labels, properties):
 
 
 @pytest.mark.integration
-def test_graph_create_can_create_relationship(neo4j_graph):
-    # type: (Graph) -> None
+def test_graph_create_can_create_relationship(neo4j_graph: Graph) -> None:
 
     def _assert_alice_knows_bob(alice, bob, knows):
         assert isinstance(alice, Node)
@@ -199,7 +189,7 @@ def test_graph_create_can_create_relationship(neo4j_graph):
     alice = create_node(g, properties={'name': 'Alice'})
     bob = create_node(g, properties={'name': 'Bob'})
 
-    knows_rel = py2neo.Relationship(alice, 'KNOWS', bob, **{'since': '2006'})
+    knows_rel = Relationship(alice, 'KNOWS', bob, **{'since': '2006'})
     create_result = g.create(knows_rel)
     assert create_result is not None
 
@@ -207,33 +197,45 @@ def test_graph_create_can_create_relationship(neo4j_graph):
 
     del alice, bob, knows_rel
 
-    alice, knows, bob = foremost(cypher_execute(g, """
+    alice, knows, bob = foremost(
+        cypher_execute(
+            g,
+            """
         MATCH (n1{name:"Alice"})-[r:KNOWS]->(n2{name:"Bob"})
         RETURN n1, r, n2
-        """))
+        """,
+        )
+    )
 
     _assert_alice_knows_bob(alice, bob, knows)
 
 
-def test_graph_can_find(sample_graph_and_nodes):
+def test_graph_can_find(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     """Test :func:`~py2neo_compat.Graph.find`."""
-    g, node_a, node_b = sample_graph_and_nodes
-    node_b2 = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'b',
-                                     'py2neo_ver': str(py2neo_ver)+'_xxx'})
+    g, _, _ = sample_graph_and_nodes
+    node_b2 = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'b', 'py2neo_ver': str(py2neo_ver) + '_xxx'},
+    )
+    assert node_b2 is not None
 
     nodes = list(
-        g.find(label='thingy', property_key='name', property_value='b'))
+        g.find(label='thingy', property_key='name', property_value='b')
+    )
     assert nodes is not None
     assert len(nodes) == 2
 
 
-def test_graph_can_find_one(sample_graph_and_nodes):
+def test_graph_can_find_one(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     """Test :func:`~py2neo_compat.Graph.find_one`."""
-    g, node_a, node_b = sample_graph_and_nodes
-    node_b2 = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'b',
-                                     'py2neo_ver': str(py2neo_ver)+'_xxx'})
+    g, _, _ = sample_graph_and_nodes
+    node_b2 = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'b', 'py2neo_ver': str(py2neo_ver) + '_xxx'},
+    )
+    assert node_b2 is not None
 
     node = g.find_one(label='thingy', property_key='name', property_value='b')
     assert node is not None
@@ -242,7 +244,7 @@ def test_graph_can_find_one(sample_graph_and_nodes):
 
 
 @pytest.mark.unit
-def test_legacy_node_constructor(neo4j_graph):
+def test_legacy_node_constructor(neo4j_graph: Graph):
     g = neo4j_graph
     orig_size, orig_order = (g.size, g.order)
 
@@ -271,7 +273,7 @@ def test_legacy_node_constructor(neo4j_graph):
 
 
 @pytest.mark.unit
-def test_legacy_rel_constructor(sample_graph_and_nodes):
+def test_legacy_rel_constructor(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     orig_size, orig_order = (g.size, g.order)
@@ -285,7 +287,7 @@ def test_legacy_rel_constructor(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_graph_create_can_create_node(neo4j_graph):
+def test_graph_create_can_create_node(neo4j_graph: Graph):
     g = neo4j_graph
     orig_size, orig_order = (g.size, g.order)
 
@@ -295,11 +297,11 @@ def test_graph_create_can_create_node(neo4j_graph):
     assert new_node.labels == set()
 
     # Ensure new node in DB
-    assert (g.order, g.size) == (orig_order+1, orig_size)
+    assert (g.order, g.size) == (orig_order + 1, orig_size)
 
 
 @pytest.mark.integration
-def test_graph_create_can_create_rel_3tuple(sample_graph_and_nodes):
+def test_graph_create_can_create_rel_3tuple(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     """`Graph.create` can create relationship from tuple (Node, reltype, Node)"""
     g, node_a, node_b = sample_graph_and_nodes
     orig_size, orig_order = (g.size, g.order)
@@ -310,26 +312,30 @@ def test_graph_create_can_create_rel_3tuple(sample_graph_and_nodes):
     assert hungry_for.start_node == node_a
     assert hungry_for.end_node == node_b
 
-    assert (g.order, g.size) == (orig_order, orig_size+1)
+    assert (g.order, g.size) == (orig_order, orig_size + 1)
 
 
 @pytest.mark.integration
-def test_graph_create_can_create_rel_4tuple_with_properties(sample_graph_and_nodes):
+def test_graph_create_can_create_rel_4tuple_with_properties(
+    sample_graph_and_nodes: tuple[Graph, Node, Node],
+):
     """`Graph.create` can create relationship from tuple (Node, reltype, Node)"""
     g, node_a, node_b = sample_graph_and_nodes
     orig_size, orig_order = (g.size, g.order)
 
-    hungry_for = foremost(g.create((node_a, 'hungry_for', node_b, {'eats': 'food'})))
+    hungry_for = foremost(
+        g.create((node_a, 'hungry_for', node_b, {'eats': 'food'}))
+    )
 
     assert hungry_for.reltype == 'hungry_for'
     assert hungry_for.start_node == node_a
     assert hungry_for.end_node == node_b
 
-    assert (g.order, g.size) == (orig_order, orig_size+1)
+    assert (g.order, g.size) == (orig_order, orig_size + 1)
 
 
 @pytest.mark.integration
-def test_can_create_empty_node(neo4j_graph):
+def test_can_create_empty_node(neo4j_graph: Graph):
     """Test :func:`~py2neo_compat.create_node` with an empty node."""
     empty = create_node(graph=neo4j_graph)
     assert empty is not None
@@ -345,11 +351,12 @@ def test_can_get_graph_from_node(neo4j_graph):
 
 
 @pytest.mark.integration
-def test_graph_can_match_kwargs_two_nodes_rel_type(sample_graph_and_nodes):
+def test_graph_can_match_kwargs_two_nodes_rel_type(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     results = list(
-        g.match(start_node=node_a, rel_type='points_to', end_node=node_b))
+        g.match(start_node=node_a, rel_type='points_to', end_node=node_b)
+    )
     assert results
     result0 = results[0]
     assert result0['sample'] == 'property'
@@ -358,7 +365,7 @@ def test_graph_can_match_kwargs_two_nodes_rel_type(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_graph_can_match_kwargs_end_node_rel_type(sample_graph_and_nodes):
+def test_graph_can_match_kwargs_end_node_rel_type(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     results = list(g.match(rel_type='points_to', end_node=node_b))
@@ -370,7 +377,7 @@ def test_graph_can_match_kwargs_end_node_rel_type(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_graph_can_match_3_args(sample_graph_and_nodes):
+def test_graph_can_match_3_args(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     results = list(g.match(node_a, 'points_to', node_b))
@@ -382,7 +389,7 @@ def test_graph_can_match_3_args(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_graph_can_match_kwargs_nodes_only(sample_graph_and_nodes):
+def test_graph_can_match_kwargs_nodes_only(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     results = list(g.match(start_node=node_a, end_node=node_b))
@@ -395,7 +402,7 @@ def test_graph_can_match_kwargs_nodes_only(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_graph_can_match_one(sample_graph_and_nodes):
+def test_graph_can_match_one(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     result = g.match_one(start_node=node_a, rel_type='points_to')
@@ -403,7 +410,7 @@ def test_graph_can_match_one(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_update_properties(sample_graph_and_nodes):
+def test_update_properties(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     """Ensure :func:`py2neo_compat.update_properties` works."""
     g, node_a, _ = sample_graph_and_nodes
 
@@ -416,7 +423,9 @@ def test_update_properties(sample_graph_and_nodes):
         node_a.cache.clear()
     except AttributeError:
         pass
-    node_a2 = foremost(cypher_execute(g, 'MATCH (n:thingy {name: "a"}) RETURN n'))['n']
+    node_a2 = foremost(
+        cypher_execute(g, 'MATCH (n:thingy {name: "a"}) RETURN n')
+    )['n']
     assert id(node_a) != id(node_a2)
 
     assert 'foo' in node_a2
@@ -424,33 +433,37 @@ def test_update_properties(sample_graph_and_nodes):
 
 
 @pytest.mark.integration
-def test_graph_cypher_execute(sample_graph):
-    # type: (py2neo.Graph) -> None
+def test_graph_cypher_execute(sample_graph: Graph) -> None:
     """Ensure :meth:`Graph.cypher.execute` works."""
 
-    r = cypher_execute(sample_graph, """
+    r = cypher_execute(
+        sample_graph,
+        """
         MATCH (head)-[points_to:points_to]->(tail)
         RETURN head, points_to, tail
-    """)
+    """,
+    )
 
     assert 1 == len(r)
 
 
 @pytest.mark.integration
-def test_graph_cypher_stream(sample_graph):
-    # type: (py2neo.Graph) -> None
+def test_graph_cypher_stream(sample_graph: Graph) -> None:
     """Ensure :meth:`Graph.cypher.stream` works."""
 
-    r = cypher_stream(sample_graph, """
+    r = cypher_stream(
+        sample_graph,
+        """
         MATCH (head)-[points_to:points_to]->(tail)
         RETURN head, points_to, tail
-    """)
+    """,
+    )
 
     assert 1 == len(list(r))
 
 
 @pytest.mark.integration
-def test_create_unique_rel(sample_graph_and_nodes):
+def test_create_unique_rel(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     ur = create_unique_rel(g, node_a, 'new_rel', node_b)
@@ -458,14 +471,25 @@ def test_create_unique_rel(sample_graph_and_nodes):
     assert ur.end_node == node_b
     assert ur.reltype == 'new_rel'
 
+    ur = create_unique_rel(g, start_node=node_a, rel_type='rel_with_prop', end_node=node_b, prop_key='finger', prop_val='lickin')
+    assert ur.start_node == node_a
+    assert ur.end_node == node_b
+    assert ur.reltype == 'rel_with_prop'
+    assert ur['finger'] == 'lickin'
+
 
 @pytest.mark.integration
-def test_create_unique_rel_dup_rel(sample_graph):
+def test_create_unique_rel_dup_rel(sample_graph: Graph):
     g = sample_graph
-    r = foremost(cypher_execute(g, """
+    r = foremost(
+        cypher_execute(
+            g,
+            """
         MATCH (head)-[points_to:points_to]->(tail)
         RETURN head, points_to, tail
-    """))
+    """,
+        )
+    )
     points_to1 = r['points_to']
     head = r['head']
     tail = r['tail']
@@ -482,15 +506,17 @@ def test_create_unique_rel_dup_rel(sample_graph):
 
 
 @pytest.mark.integration
-def test_can_delete_bound_rel(sample_graph_and_nodes):
+def test_can_delete_bound_rel(sample_graph_and_nodes: tuple[Graph, Node, Node]):
     g, node_a, node_b = sample_graph_and_nodes
 
     rel = g.match_one(start_node=node_a, rel_type='points_to', end_node=node_b)
     assert isinstance(rel, Relationship)
 
     delete_rel(rel)
-    assert g.match_one(start_node=node_a, rel_type='points_to',
-                       end_node=node_b) is None
+    assert (
+        g.match_one(start_node=node_a, rel_type='points_to', end_node=node_b)
+        is None
+    )
 
 
 @pytest.mark.integration

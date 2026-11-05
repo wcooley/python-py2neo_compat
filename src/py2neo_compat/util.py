@@ -1,32 +1,18 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """Misc utilities"""
 
-from __future__ import absolute_import, print_function
+from collections.abc import Callable, Iterable
+from typing import TypeVar
 
-import logging
-
-import importlib
-
-try:  # pragma: no cover
-    from typing import Iterable, TypeVar, Callable, Union, Optional
-    C = TypeVar('C')  # Constructor/Class
-    D = TypeVar('D')  # Default
-    E = TypeVar('E')  # Element
-    ElementPredicate = Callable[[E], bool]
-except:
-    """Module *typing* is optional for Python 2.7 type annotations."""
+E = TypeVar('E')  # Element
 
 from boltons.iterutils import first
 
 
-log = logging.getLogger(__name__)  # pylint: disable=invalid-name
-log.addHandler(logging.NullHandler())
-
-
-def foremost(iterable, default=None, key=lambda x: x is not None):
-    # type: (Iterable[E], Optional[D], Optional[ElementPredicate]) -> Union[E, D]
+def foremost[E](
+    iterable: Iterable[E],
+    default: E | None = None,
+    key: Callable[[E], bool] = lambda x: x is not None,
+) -> E | None:
     """Return first non-*None* element from an iterable or *default*.
 
     *foremost* is a specialized version of :func:`boltons.iterutils.first`,
@@ -39,61 +25,7 @@ def foremost(iterable, default=None, key=lambda x: x is not None):
 
     :param Iterable iterable: Iterable to work on.
     :param default: Default if all elements of *iterable* are *None*. Default is *None*.
+    :param Callable[[E], bool]: Predicate to determine the element of iterable should be selected.
     :return: First non-None element of Iterable.
     """
     return first(iterable, default=default, key=key)
-
-
-# From the Python 3.3 doc:
-# https://docs.python.org/3.3/library/types.html#standard-interpreter-types
-#
-# class types.SimpleNamespace
-#
-# A simple object subclass that provides
-# attribute access to its namespace, as well as a meaningful repr.
-#
-# Unlike object, with SimpleNamespace you can add and remove
-# attributes. If a SimpleNamespace object is initialized with keyword
-# arguments, those are directly added to the underlying namespace.
-#
-# SimpleNamespace may be useful as a replacement for class NS: pass.
-# However, for a structured record type use namedtuple() instead.
-
-# This is useful for testing, where one might want to monkeypatch a
-# more minimal object than the original, to avoid unexpected
-# side-effects
-
-try:
-    from types import SimpleNamespace
-except ImportError:
-    class SimpleNamespace:
-        """An empty, modifiable class for compatibility with Python < 3.3."""
-
-        def __init__(self, **kwargs):
-            """Initialize."""
-            self.__dict__.update(kwargs)
-
-        def __repr__(self):  # pragma: no cover
-            """Represent."""
-            keys = sorted(self.__dict__)
-            items = ("{}={!r}".format(k, self.__dict__[k]) for k in keys)
-            return "{}({})".format(type(self).__name__, ", ".join(items))
-
-
-def qualify_symbol(symname, ns):
-    """Build a fully-qualified symbol name from a name & part of namespace."""
-
-    if ns[0] == '.':
-        ns = 'py2neo' + ns
-
-    if ns[-1] == '.':
-        ns += symname
-
-    return tuple(ns.rsplit('.', 1))
-
-
-def import_symbol(modname, symname):
-    """Load the object by its fully-qualified name."""
-
-    mod = importlib.import_module(modname)
-    return getattr(mod, symname)

@@ -1,20 +1,30 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Test fixtures & config for :mod:`py2neo_compat`."""
 
-from __future__ import absolute_import, print_function
-
-import os
-import pytest  # noqa
 import logging
+import os
+from pathlib import Path
 
-import py2neo_compat
-from py2neo_compat import Graph, py2neo_ver, create_node
+import py2neo
+import pytest
+
+from py2neo_compat import Graph, Node, create_node, py2neo_ver
 from py2neo_compat.util import foremost
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 log.addHandler(logging.NullHandler())
+
+
+def pytest_report_header(config, start_path: Path):
+    """Add versions & config info to test output on terminal."""
+    lines = []
+
+    if 'NEO4J_URI' in os.environ:
+        lines.append(f'Neo4J URI: {os.environ["NEO4J_URI"]}')
+
+    lines.append(f'py2neo: {py2neo.__version__}')
+
+    return lines
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -23,16 +33,14 @@ def logging_config():
 
 
 @pytest.fixture(scope='session')
-def neo4j_uri():
-    # type: () -> str
+def neo4j_uri() -> str:
     """Neo4J URI.  Set env NEO4J_URI or override fixture to change."""
     return os.environ.get('NEO4J_URI', 'http://localhost:7474/db/data/')
 
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def neo4j_graph_object(neo4j_uri):
-    # type: (str) -> Graph
+def neo4j_graph_object(neo4j_uri: str) -> Graph:
     """Create a Graph object from a URI."""
     graph = Graph(neo4j_uri)
     # This forces communication with the server, so it serves as an
@@ -43,8 +51,7 @@ def neo4j_graph_object(neo4j_uri):
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def neo4j_graph_schemaless(neo4j_graph_object):
-    # type: (Graph) -> Graph
+def neo4j_graph_schemaless(neo4j_graph_object: Graph) -> Graph:
     """Graph instance cleared of all schema."""
     graph = neo4j_graph_object
     try:
@@ -59,10 +66,8 @@ def neo4j_graph_schemaless(neo4j_graph_object):
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def neo4j_graph_empty(neo4j_graph_object):
-    # type: (Graph) -> Graph
+def neo4j_graph_empty(neo4j_graph_object: Graph) -> Graph:
     """Graph instance with no nodes or relationships."""
-    py2neo_compat.monkey_patch_py2neo()
     graph = neo4j_graph_object
     graph.delete_all()
     return graph
@@ -70,23 +75,28 @@ def neo4j_graph_empty(neo4j_graph_object):
 
 # noinspection PyShadowingNames,PyUnusedLocal
 @pytest.fixture
-def neo4j_graph(neo4j_graph_schemaless, neo4j_graph_empty):
-    # type: (Graph, Graph) -> Graph
+def neo4j_graph(neo4j_graph_schemaless: Graph, neo4j_graph_empty: Graph) -> Graph:
     """Test Neo4j graph fixture."""
     return neo4j_graph_schemaless
 
 
 # noinspection PyShadowingNames
 @pytest.fixture
-def sample_graph_and_nodes(neo4j_graph):
+def sample_graph_and_nodes(neo4j_graph: Graph) -> tuple[Graph, Node, Node]:
     """Sample graph with some nodes."""
     g = neo4j_graph
     assert g.neo4j_version
 
-    node_a = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'a', 'py2neo_ver': py2neo_ver})
-    node_b = create_node(graph=g, labels=['thingy'],
-                         properties={'name': 'b', 'py2neo_ver': py2neo_ver})
+    node_a = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'a', 'py2neo_ver': py2neo_ver},
+    )
+    node_b = create_node(
+        graph=g,
+        labels=['thingy'],
+        properties={'name': 'b', 'py2neo_ver': py2neo_ver},
+    )
 
     assert None is not node_a
     assert None is not node_b
@@ -102,6 +112,6 @@ def sample_graph_and_nodes(neo4j_graph):
 
 
 @pytest.fixture
-def sample_graph(sample_graph_and_nodes):
+def sample_graph(sample_graph_and_nodes: tuple[Graph, Node, Node]) -> Graph:
     """Sample graph only."""
     return foremost(sample_graph_and_nodes)
